@@ -1,7 +1,11 @@
-#include <iostream>
+#include <QtGui/QApplication>
+#include "MainWindow.h"
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-    std::cout << "Hello, world! I'm layoutie!" << std::endl;
-    return 0;
+	QApplication a(argc, argv);
+	MainWindow w;
+	w.show();
+
+	return a.exec();
 }
