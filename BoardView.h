@@ -1,5 +1,5 @@
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef BOARD_VIEW_H
+#define BOARD_VIEW_H
 
 #include <QtGui>
 
@@ -8,7 +8,9 @@ namespace SLFormat
 	class Board;
 }
 
-class BoardView : public QWidget
+class BoardScene;
+
+class BoardView : public QGraphicsView
 {
 	Q_OBJECT
 public:
@@ -18,8 +20,14 @@ public:
 signals:
 	void	modified();
 
+protected:
+	virtual void wheelEvent(QWheelEvent* inEvent);
+
 private:
+	void	updateZoom();
+
 	SLFormat::Board* mBoard;
+	BoardScene*	mScene;
 };
 
-#endif //BOARD_H
+#endif //BOARD_VIEW_H

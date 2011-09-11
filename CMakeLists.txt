@@ -8,15 +8,29 @@ find_package(Qt4 REQUIRED)
 
 set(LAYOUTIE_SOURCES
 	main.cpp
+	BoardScene.cpp
 	BoardView.cpp
+	ComponentFactory.cpp
 	MainWindow.cpp
 	ProjectView.cpp
+	Settings.cpp
+
+	Components/SMDItem.cpp
+	Components/TrackItem.cpp
+	Components/ZoneItem.cpp
 )
 
 set(LAYOUTIE_HEADERS
+	BoardScene.h
 	BoardView.h
+#	ComponentFactory.h
 	MainWindow.h
 	ProjectView.h
+#	Settings.h
+
+#	Components/SMDItem.h
+#	Components/TrackItem.h
+#	Components/ZoneItem.h
 )
 
 set(LAYOUTIE_FORMS
@@ -35,7 +49,7 @@ QT4_ADD_RESOURCES(LAYOUTIE_RESOURCES_RCC ${LAYOUTIE_RESOURCES})
 
 include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
-include_directories(${SPRINT_INCLUDE_DIR} ${QT4_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SPRINT_INCLUDE_DIR} ${QT4_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(layoutie
 	${LAYOUTIE_SOURCES}

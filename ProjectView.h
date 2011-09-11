@@ -1,5 +1,5 @@
-#ifndef PROJECT_H
-#define PROJECT_H
+#ifndef PROJECT_VIEW_H
+#define PROJECT_VIEW_H
 
 #include <QtGui>
 #include <SLProject.h>
@@ -36,4 +36,4 @@ private:
 	bool	mModified;
 };
 
-#endif //PROJECT_H
+#endif //PROJECT_VIEW_H
