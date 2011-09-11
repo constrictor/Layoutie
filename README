@@ -1,0 +1,6 @@
+!!! This project is under development and not yet ready to be used !!!
+
+This project is a simple application for editing printer circuit board designs.
+
+Use of libsprint (https://gitorious.org/libsprint/) allows reading/writing files
+created by Sprint Layout software (that is unfortunately unavailable on Linux).
