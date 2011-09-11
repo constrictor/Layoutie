@@ -18,12 +18,15 @@
 
 #include "ComponentFactory.h"
 
-#include <SLComponent.h>
+#include <SLCircleComponent.h>
 #include <SLSMDComponent.h>
+#include <SLTextComponent.h>
 #include <SLTrackComponent.h>
 #include <SLZoneComponent.h>
 
+#include "Components/CircleItem.h"
 #include "Components/SMDItem.h"
+#include "Components/TextItem.h"
 #include "Components/TrackItem.h"
 #include "Components/ZoneItem.h"
 
@@ -38,10 +41,12 @@ ComponentItem* ComponentFactory::createItem(SLFormat::Component* inComponent)
 			res = new SMDItem(static_cast<SMDComponent*>(inComponent));
 			break;
 		case ComponentTypes::Circle:
+			res = new CircleItem(static_cast<CircleComponent*>(inComponent));
 			break;
 		case ComponentTypes::Pad:
 			break;
 		case ComponentTypes::Text:
+			res = new TextItem(static_cast<TextComponent*>(inComponent));
 			break;
 		case ComponentTypes::Track:
 			res = new TrackItem(static_cast<TrackComponent*>(inComponent));

@@ -33,6 +33,7 @@ BoardView::BoardView(QWidget* inParent, SLFormat::Board* inBoard)
 	this->setScene(mScene);
 
 	setTransformationAnchor(AnchorUnderMouse);
+	setRenderHint(QPainter::Antialiasing);
 	updateZoom();
 }
 

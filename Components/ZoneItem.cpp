@@ -43,6 +43,7 @@ void ZoneItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 	const QBrush br(color);
 	const QPen p(color);
 
+	//TODO: Hatched zone support
 	float width = mComponent->width();
 	if (!inIsMainNotGround && !mComponent->isCutoutArea())
 	{
