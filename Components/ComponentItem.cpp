@@ -31,9 +31,13 @@ ComponentItem::~ComponentItem()
 
 void ComponentItem::update()
 {
-	updateMainItem(mMainItem);
+	cleanSubItems(mMainItem);
+	createItem(mMainItem, true);
 	if (mGroundPlaneItem)
-		updateGroundPlaneItem(mGroundPlaneItem);
+	{
+		cleanSubItems(mGroundPlaneItem);
+		createItem(mGroundPlaneItem, false);
+	}
 }
 
 QGraphicsItemGroup* ComponentItem::mainItem()
@@ -46,7 +50,16 @@ QGraphicsItemGroup* ComponentItem::groundPlaneItem()
 	if (!mGroundPlaneItem)
 	{
 		mGroundPlaneItem = new QGraphicsItemGroup;
-		updateGroundPlaneItem(mGroundPlaneItem);
+		createItem(mGroundPlaneItem, false);
 	}
 	return mGroundPlaneItem;
+}
+
+void ComponentItem::cleanSubItems(QGraphicsItemGroup* inOutItem)
+{
+	for (auto item : inOutItem->childItems())
+	{
+		inOutItem->removeFromGroup(item);
+		delete item;
+	}
 }

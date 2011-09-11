@@ -33,9 +33,10 @@ public:
 	QGraphicsItemGroup*	mainItem();
 	QGraphicsItemGroup*	groundPlaneItem();
 protected:
-	virtual void updateMainItem(QGraphicsItemGroup* inOutMainItem) = 0;
-	virtual void updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem) = 0;
+	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround) = 0;
 private:
+	void cleanSubItems(QGraphicsItemGroup* inOutItem);
+
 	QGraphicsItemGroup* mMainItem;
 	QGraphicsItemGroup* mGroundPlaneItem;
 };

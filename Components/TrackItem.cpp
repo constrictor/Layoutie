@@ -33,13 +33,21 @@ TrackItem::TrackItem(SLFormat::TrackComponent* inComponent)
 {
 }
 
-void TrackItem::updateMainItem(QGraphicsItemGroup* inOutMainItem)
+void TrackItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 {
-	const QColor color = gSettings().layerColor(mComponent->layer());
+	if (inIsMainNotGround && mComponent->isCutoutArea())
+		return;
+	const QColor color = inIsMainNotGround ?
+		gSettings().layerColor(mComponent->layer())
+		: gSettings().backgroundColor();
 	const QBrush br(color);
 	const QPen p(color);
 
-	const float width = mComponent->width();
+	float width = mComponent->width();
+	if (!inIsMainNotGround && !mComponent->isCutoutArea())
+	{
+		width += mComponent->groundPlaneDistance() * 2;
+	}
 	const float radius = width / 2;
 	QPointF prev;
 	bool hasPrev = false;
@@ -68,7 +76,7 @@ void TrackItem::updateMainItem(QGraphicsItemGroup* inOutMainItem)
 			track->setPolygon(poly);
 			track->setBrush(br);
 			track->setPen(p);
-			inOutMainItem->addToGroup(track);
+			inOutItem->addToGroup(track);
 		}
 		hasPrev = true;
 		prev = pointF;
@@ -81,12 +89,6 @@ void TrackItem::updateMainItem(QGraphicsItemGroup* inOutMainItem)
 		auto circle = new QGraphicsEllipseItem(rect);
 		circle->setBrush(br);
 		circle->setPen(p);
-		inOutMainItem->addToGroup(circle);
+		inOutItem->addToGroup(circle);
 	}
-}
-
-void TrackItem::updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem)
-{
-	(void)inOutGroundPlaneItem;
-	//TODO: TrackItem::updateGroundPlaneItem
 }

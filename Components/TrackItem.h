@@ -34,8 +34,7 @@ public:
 	TrackItem(SLFormat::TrackComponent* inComponent);
 
 protected:
-	virtual void updateMainItem(QGraphicsItemGroup* inOutMainItem);
-	virtual void updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem);
+	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 
 private:
 	SLFormat::TrackComponent* mComponent;

@@ -36,8 +36,7 @@ public:
 	ZoneItem(SLFormat::ZoneComponent* inComponent);
 
 protected:
-	virtual void updateMainItem(QGraphicsItemGroup* inOutMainItem);
-	virtual void updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem);
+	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 
 private:
 	void	addLineToPolygon(QPolygonF& outPolygon1, QPolygonF& outPolygon2, QPointF inPoint1, QPointF inPoint2, qreal inRadius);
