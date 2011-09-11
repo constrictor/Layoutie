@@ -8,6 +8,7 @@ find_package(Qt4 REQUIRED)
 
 set(LAYOUTIE_SOURCES
 	main.cpp
+	BoardGrid.cpp
 	BoardScene.cpp
 	BoardView.cpp
 	ComponentFactory.cpp
@@ -21,6 +22,7 @@ set(LAYOUTIE_SOURCES
 )
 
 set(LAYOUTIE_HEADERS
+#	BoardGrid.h
 	BoardScene.h
 	BoardView.h
 #	ComponentFactory.h

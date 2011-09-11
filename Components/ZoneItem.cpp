@@ -1,8 +1,31 @@
+/*
+ *    This file is part of layoutie.
+ *
+ *    layoutie is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    layoutie is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with layoutie.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "ZoneItem.h"
+
+#include "Settings.h"
 
 #include <SLZoneComponent.h>
 
-#include "Settings.h"
+#include <QBrush>
+#include <QPen>
+
+#include <cmath>
 
 ZoneItem::ZoneItem(SLFormat::ZoneComponent* inComponent)
 	:mComponent(inComponent)
@@ -16,7 +39,7 @@ ZoneItem::~ZoneItem()
 
 void ZoneItem::update()
 {
-	const QColor color = Settings::instance().layerColor(mComponent->layer());
+	const QColor color = gSettings().layerColor(mComponent->layer());
 	const QBrush br(color);
 	const QPen p(color);
 
@@ -85,7 +108,7 @@ void ZoneItem::addLineToPolygon(QPolygonF& outPolygon1, QPolygonF& outPolygon2, 
 		auto tmp = -off.x();
 		off.setX(off.y());
 		off.setY(tmp);
-		qreal koef = inRadius / sqrt(off.x() * off.x() + off.y() * off.y());
+		qreal koef = inRadius / std::sqrt(off.x() * off.x() + off.y() * off.y());
 		off.setX(off.x() * koef);
 		off.setY(off.y() * koef);
 	}

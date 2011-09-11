@@ -16,27 +16,26 @@
  *
  */
 
-#ifndef ZONE_ITEM_H
-#define ZONE_ITEM_H
+#ifndef BOARD_GRID_H
+#define BOARD_GRID_H
 
 #include <QGraphicsItemGroup>
 
 namespace SLFormat
 {
-	class ZoneComponent;
+	class Board;
 }
 
-class ZoneItem : public QGraphicsItemGroup
+class BoardGrid : public QGraphicsItemGroup
 {
 public:
-	ZoneItem(SLFormat::ZoneComponent* inComponent);
-	~ZoneItem();
-	
-	void update();
-private:
-	void	addLineToPolygon(QPolygonF& outPolygon1, QPolygonF& outPolygon2, QPointF inPoint1, QPointF inPoint2, qreal inRadius);
+    BoardGrid(SLFormat::Board* inBoard);
 
-	SLFormat::ZoneComponent* mComponent;
+	void updateGrid();
+private:
+
+	SLFormat::Board* mBoard;
+	QVector<QGraphicsItem*> mMainLines;
 };
 
-#endif //ZONE_ITEM_H
+#endif // BOARD_GRID_H

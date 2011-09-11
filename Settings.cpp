@@ -1,3 +1,21 @@
+/*
+ *    This file is part of layoutie.
+ *
+ *    layoutie is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    layoutie is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with layoutie.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "Settings.h"
 
 #include <assert.h>
@@ -6,14 +24,21 @@
 
 Settings* Settings::mInstance = nullptr;
 
-Settings& Settings::instance()
+Settings& gSettings()
 {
-	if (!mInstance)
+	if (!Settings::mInstance)
 	{
-		mInstance = new Settings();
+		Settings::mInstance = new Settings();
 	}
-	return *mInstance;
+	return *Settings::mInstance;
 }
+
+Settings::Settings()
+{
+	mGridMainPen = QPen(QColor(0x404040), 2.0);
+	mGridSubPen = QPen(QColor(0x404040));
+}
+
 
 QColor Settings::layerColor(int inLayer) const
 {
@@ -66,24 +91,19 @@ unsigned int Settings::layerFromOrderNumber(int inOrderNum) const
 			assert(false);
 			return 0;
 	}
-/*	switch(inOrderNum)
-	{
-		case 0:
-			return 2;
-		case 1:
-			return 4;
-		case 2:
-			return 3;
-		case 3:
-			return 5;
-		case 4:
-			return 0;
-		case 5:
-			return 1;
-		case 6:
-			return 6;
-		default:
-			assert(false);
-			return 0;
-	}*/
+}
+
+const QPen& Settings::gridMainPen() const
+{
+	return mGridMainPen;
+}
+
+const QPen& Settings::gridSubPen() const
+{
+	return mGridSubPen;
+}
+
+unsigned Settings::numGridSubdivisions() const
+{
+	return 10;
 }
