@@ -24,29 +24,47 @@
 
 #include <QBrush>
 #include <QPen>
+#include <QGraphicsPolygonItem>
 
 SMDItem::SMDItem(SLFormat::SMDComponent* inComponent)
 	:mComponent(inComponent)
 {
-	update();
 }
 
-SMDItem::~SMDItem()
+void SMDItem::updateMainItem(QGraphicsItemGroup* inOutMainItem)
 {
-}
-
-void SMDItem::update()
-{
+	auto main = new QGraphicsPolygonItem;
 	QPolygonF poly;
 	for (auto point : mComponent->rect().points)
 	{
 		poly << QPointF(point.x, - point.y);
 	}
 	poly << poly.first();
-	setPolygon(poly);
+	main->setPolygon(poly);
 	QColor color = gSettings().layerColor(mComponent->layer());
 	QBrush br(color);
-	setBrush(br);
+	main->setBrush(br);
 	QPen p(color);
-	setPen(p);
+	main->setPen(p);
+	inOutMainItem->addToGroup(main);
+}
+
+void SMDItem::updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem)
+{
+	auto main = new QGraphicsPolygonItem;
+	double groundPlaneDistance = mComponent->groundPlaneDistance();
+	QPolygonF poly;
+	for (auto point : mComponent->rect().points)
+	{
+		poly << QPointF(point.x, - point.y);
+	}
+	poly << poly.first();
+	main->setPolygon(poly);
+	QColor color = gSettings().backgroundColor();
+	QBrush br(color);
+	main->setBrush(br);
+	QPen p(color, groundPlaneDistance * 2);
+	p.setJoinStyle(Qt::MiterJoin);
+	main->setPen(p);
+	inOutGroundPlaneItem->addToGroup(main);
 }

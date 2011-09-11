@@ -16,33 +16,28 @@
  *
  */
 
-#ifndef ZONE_ITEM_H
-#define ZONE_ITEM_H
+#ifndef COMPONENT_ITEM_H
+#define COMPONENT_ITEM_H
 
-#include "ComponentItem.h"
+class QGraphicsItemGroup;
 
-#include <QPointF>
-
-namespace SLFormat
-{
-	class ZoneComponent;
-}
-
-class QPolygonF;
-
-class ZoneItem : public ComponentItem
+class ComponentItem
 {
 public:
-	ZoneItem(SLFormat::ZoneComponent* inComponent);
+	ComponentItem();
 
+	virtual ~ComponentItem();
+
+	void update();
+
+	QGraphicsItemGroup*	mainItem();
+	QGraphicsItemGroup*	groundPlaneItem();
 protected:
-	virtual void updateMainItem(QGraphicsItemGroup* inOutMainItem);
-	virtual void updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem);
-
+	virtual void updateMainItem(QGraphicsItemGroup* inOutMainItem) = 0;
+	virtual void updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem) = 0;
 private:
-	void	addLineToPolygon(QPolygonF& outPolygon1, QPolygonF& outPolygon2, QPointF inPoint1, QPointF inPoint2, qreal inRadius);
-
-	SLFormat::ZoneComponent* mComponent;
+	QGraphicsItemGroup* mMainItem;
+	QGraphicsItemGroup* mGroundPlaneItem;
 };
 
-#endif //ZONE_ITEM_H
+#endif //COMPONENT_ITEM_H

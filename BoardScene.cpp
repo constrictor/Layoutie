@@ -21,6 +21,7 @@
 #include "ComponentFactory.h"
 #include "BoardView.h"
 #include "BoardGrid.h"
+#include "Components/ComponentItem.h"
 
 #include <SLBoard.h>
 #include <SLComponent.h>
@@ -33,13 +34,41 @@ BoardScene::BoardScene(SLFormat::Board* inBoard, BoardView* inParent)
 {
 	this->setSceneRect(0, 0, mBoard->size().x, mBoard->size().y);
 
-	QBrush brush(Qt::black);
+	// background
+	const unsigned activeLayer = mBoard->activeLayer();
+	QBrush brush(gSettings().backgroundColor());
 	QPen pen(brush.color());
 	mBackground = this->addRect(this->sceneRect(), pen, brush);
 
+	// ground planes (initially invisible)
+	for (unsigned i = 0; i < SLFormat::Board::cNumberLayers; i++)
+	{
+		unsigned layer = gSettings().layerFromOrderNumber(i);
+		if (mBoard->isGroundPlaneSupported(layer))
+		{
+			QGraphicsItemGroup* plane = new QGraphicsItemGroup;
+			mGroundPlanes[layer] = plane;
+
+			addItem(plane);
+			plane->setVisible(false);
+
+			auto rect = new QGraphicsRectItem(this->sceneRect());
+			const QColor color = gSettings().groundPlaneLayerColor(layer);
+			rect->setBrush(QBrush(color));
+			rect->setPen(QPen(color));
+			plane->addToGroup(rect);
+		}
+		else
+		{
+			mGroundPlanes[layer] = nullptr;
+		}
+	}
+
+	// grid
 	mGrid = new BoardGrid(mBoard);
 	addItem(mGrid);
 
+	// layers
 	for (unsigned i = 0; i < SLFormat::Board::cNumberLayers; i++)
 	{
 		unsigned layer = gSettings().layerFromOrderNumber(i);
@@ -47,14 +76,26 @@ BoardScene::BoardScene(SLFormat::Board* inBoard, BoardView* inParent)
 		addItem(mLayerGroups[layer]);
 	}
 
+	// components on layers
 	for (auto comp : mBoard->components())
 	{
-		QGraphicsItem* item = ComponentFactory::createItem(comp);
+		ComponentItem* item = ComponentFactory::createItem(comp);
 		if (item)
 		{
 			unsigned layer = comp->layer();
-			mLayerGroups[layer]->addToGroup(item);
+			mLayerGroups[layer]->addToGroup(item->mainItem());
+			if (mBoard->isGroundPlaneSupported(layer))
+			{
+				mGroundPlanes[layer]->addToGroup(item->groundPlaneItem());
+			}
 		}
+	}
+
+	// show ground plane for active layer
+	if (mBoard->isGroundPlaneEnabled(activeLayer))
+	{
+		assert(mGroundPlanes[activeLayer]);
+		mGroundPlanes[activeLayer]->setVisible(true);
 	}
 }
 

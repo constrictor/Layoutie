@@ -24,20 +24,16 @@
 
 #include <QBrush>
 #include <QPen>
+#include <QGraphicsItemGroup>
 
 #include <cmath>
 
 ZoneItem::ZoneItem(SLFormat::ZoneComponent* inComponent)
 	:mComponent(inComponent)
 {
-	update();
 }
 
-ZoneItem::~ZoneItem()
-{
-}
-
-void ZoneItem::update()
+void ZoneItem::updateMainItem(QGraphicsItemGroup* inOutMainItem)
 {
 	const QColor color = gSettings().layerColor(mComponent->layer());
 	const QBrush br(color);
@@ -77,13 +73,13 @@ void ZoneItem::update()
 	track->setFillRule(Qt::WindingFill);
 	track->setBrush(br);
 	track->setPen(p);
-	addToGroup(track);
+	inOutMainItem->addToGroup(track);
 	track = new QGraphicsPolygonItem;
 	track->setPolygon(poly2);
 	track->setFillRule(Qt::WindingFill);
 	track->setBrush(br);
 	track->setPen(p);
-	addToGroup(track);
+	inOutMainItem->addToGroup(track);
 
 	for (auto point : mComponent->points())
 	{
@@ -96,8 +92,14 @@ void ZoneItem::update()
 		auto circle = new QGraphicsEllipseItem(rect);
 		circle->setBrush(br);
 		circle->setPen(p);
-		addToGroup(circle);
+		inOutMainItem->addToGroup(circle);
 	}
+}
+
+void ZoneItem::updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem)
+{
+	(void)inOutGroundPlaneItem;
+	//TODO: ZoneItem::updateGroundPlaneItem()
 }
 
 void ZoneItem::addLineToPolygon(QPolygonF& outPolygon1, QPolygonF& outPolygon2, QPointF inPoint1, QPointF inPoint2, qreal inRadius)

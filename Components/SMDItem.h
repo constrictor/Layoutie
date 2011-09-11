@@ -19,21 +19,23 @@
 #ifndef SMD_ITEM_H
 #define SMD_ITEM_H
 
-#include <QGraphicsPolygonItem>
+#include "ComponentItem.h"
 
 namespace SLFormat
 {
 	class SMDComponent;
 }
 
-class SMDItem : public QGraphicsPolygonItem
+class SMDItem : public ComponentItem
 {
 public:
 	SMDItem(SLFormat::SMDComponent* inComponent);
-	~SMDItem();
 
-	void update();
+protected:
+	virtual void updateMainItem(QGraphicsItemGroup* inOutMainItem);
+	virtual void updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem);
 private:
+
 	SLFormat::SMDComponent* mComponent;
 };
 

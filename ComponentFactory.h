@@ -24,11 +24,11 @@ namespace SLFormat
 	class Component;
 }
 
-class QGraphicsItem;
+class ComponentItem;
 
 namespace ComponentFactory
 {
-	QGraphicsItem* createItem(SLFormat::Component* inComponent);
+	ComponentItem* createItem(SLFormat::Component* inComponent);
 }
 
 #endif //COMPONENT_FACTORY_H

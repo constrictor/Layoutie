@@ -24,20 +24,16 @@
 
 #include <QBrush>
 #include <QPen>
+#include <QGraphicsItemGroup>
 
 #include <cmath>
 
 TrackItem::TrackItem(SLFormat::TrackComponent* inComponent)
 	:mComponent(inComponent)
 {
-	update();
 }
 
-TrackItem::~TrackItem()
-{
-}
-
-void TrackItem::update()
+void TrackItem::updateMainItem(QGraphicsItemGroup* inOutMainItem)
 {
 	const QColor color = gSettings().layerColor(mComponent->layer());
 	const QBrush br(color);
@@ -72,7 +68,7 @@ void TrackItem::update()
 			track->setPolygon(poly);
 			track->setBrush(br);
 			track->setPen(p);
-			addToGroup(track);
+			inOutMainItem->addToGroup(track);
 		}
 		hasPrev = true;
 		prev = pointF;
@@ -85,7 +81,12 @@ void TrackItem::update()
 		auto circle = new QGraphicsEllipseItem(rect);
 		circle->setBrush(br);
 		circle->setPen(p);
-		addToGroup(circle);
+		inOutMainItem->addToGroup(circle);
 	}
+}
 
+void TrackItem::updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem)
+{
+	(void)inOutGroundPlaneItem;
+	//TODO: TrackItem::updateGroundPlaneItem
 }

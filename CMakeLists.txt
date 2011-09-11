@@ -16,6 +16,7 @@ set(LAYOUTIE_SOURCES
 	ProjectView.cpp
 	Settings.cpp
 
+	Components/ComponentItem.cpp
 	Components/SMDItem.cpp
 	Components/TrackItem.cpp
 	Components/ZoneItem.cpp
@@ -30,6 +31,7 @@ set(LAYOUTIE_HEADERS
 	ProjectView.h
 #	Settings.h
 
+#	Components/ComponentItem.h
 #	Components/SMDItem.h
 #	Components/TrackItem.h
 #	Components/ZoneItem.h

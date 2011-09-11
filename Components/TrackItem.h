@@ -19,20 +19,24 @@
 #ifndef TRACK_ITEM_H
 #define TRACK_ITEM_H
 
-#include <QGraphicsItemGroup>
+#include "ComponentItem.h"
+
+class QGraphicsPolygonItem;
 
 namespace SLFormat
 {
 	class TrackComponent;
 }
 
-class TrackItem : public QGraphicsItemGroup
+class TrackItem : public ComponentItem
 {
 public:
 	TrackItem(SLFormat::TrackComponent* inComponent);
-	~TrackItem();
-	
-	void update();
+
+protected:
+	virtual void updateMainItem(QGraphicsItemGroup* inOutMainItem);
+	virtual void updateGroundPlaneItem(QGraphicsItemGroup* inOutGroundPlaneItem);
+
 private:
 	SLFormat::TrackComponent* mComponent;
 };

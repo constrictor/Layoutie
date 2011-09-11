@@ -64,6 +64,11 @@ QColor Settings::layerColor(int inLayer) const
 	}
 }
 
+QColor Settings::groundPlaneLayerColor(int inLayer) const
+{
+	return layerColor(inLayer).darker(300);
+}
+
 QColor Settings::backgroundColor() const
 {
 	return Qt::black;
