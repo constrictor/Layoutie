@@ -74,6 +74,26 @@ QColor Settings::backgroundColor() const
 	return Qt::black;
 }
 
+QColor Settings::throughColor()
+{
+	return 0x127F96;
+}
+
+QColor Settings::fullDrillBorderColor()
+{
+	return Qt::white;
+}
+
+QColor Settings::throughDrillBorderColor()
+{
+	return Qt::red;
+}
+
+QColor Settings::throughDrillCrossColor()
+{
+	return Qt::green;
+}
+
 unsigned int Settings::layerFromOrderNumber(int inOrderNum) const
 {
 	switch(inOrderNum)

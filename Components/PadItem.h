@@ -16,41 +16,33 @@
  *
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef PAD_ITEM_H
+#define PAD_ITEM_H
 
+#include "ComponentItem.h"
 #include <QColor>
-#include <QPen>
 
-class Settings;
+namespace SLFormat
+{
+	class PadComponent;
+}
 
-Settings& gSettings();
-
-class Settings
+class PadItem : public ComponentItem
 {
 public:
-	QColor layerColor(int inLayer) const;
-	QColor groundPlaneLayerColor(int inLayer) const;
-	QColor backgroundColor() const;
-	//QColor gridColor() const;
-	const QPen& gridMainPen() const;
-	const QPen& gridSubPen() const;
-	unsigned numGridSubdivisions() const;
+	PadItem(SLFormat::PadComponent* inComponent);
 
-	unsigned layerFromOrderNumber(int inOrderNum) const;
-
-	friend Settings& gSettings();
-	QColor throughColor();
-	QColor fullDrillBorderColor();
-	QColor throughDrillBorderColor();
-	QColor throughDrillCrossColor();
+protected:
+	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    virtual void createDrillItem(QGraphicsItemGroup* inOutItem);
 private:
-	Settings();
+	void createCircularItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+	void createPolygonItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+	void createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround, bool inHorizontal);
+	
+	QColor	color(bool inIsMainNotGround) const;
 
-	static Settings* mInstance;
-
-	QPen mGridMainPen;
-	QPen mGridSubPen;
+	SLFormat::PadComponent* mComponent;
 };
 
-#endif //SETTINGS_H
+#endif //PAD_ITEM_H

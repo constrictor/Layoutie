@@ -18,6 +18,7 @@ set(LAYOUTIE_SOURCES
 
 	Components/ComponentItem.cpp
 	Components/CircleItem.cpp
+	Components/PadItem.cpp
 	Components/SMDItem.cpp
 	Components/TextItem.cpp
 	Components/TrackItem.cpp
@@ -35,6 +36,7 @@ set(LAYOUTIE_HEADERS
 
 #	Components/ComponentItem.h
 #	Components/CircleItem.h
+#	Components/PadItem.h
 #	Components/SMDItem.h
 #	Components/TextItem.h
 #	Components/TrackItem.h

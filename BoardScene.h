@@ -44,6 +44,7 @@ private:
 	SLFormat::Board* mBoard;
 	QGraphicsItemGroup* mLayerGroups[SLFormat::Board::cNumberLayers];
 	QGraphicsItemGroup* mGroundPlanes[SLFormat::Board::cNumberLayers];
+	QGraphicsItemGroup* mDrillHoles;
 	QGraphicsRectItem* mBackground;
 	BoardGrid* mGrid;
 };

@@ -18,10 +18,12 @@
 
 #include "ComponentItem.h"
 #include <QGraphicsItemGroup>
+#include <Settings.h>
 
 ComponentItem::ComponentItem()
 	:mMainItem(new QGraphicsItemGroup),
-	mGroundPlaneItem(nullptr)
+	mGroundPlaneItem(nullptr),
+	mDrillItem(new QGraphicsItemGroup)
 {
 }
 
@@ -38,6 +40,8 @@ void ComponentItem::update()
 		cleanSubItems(mGroundPlaneItem);
 		createItem(mGroundPlaneItem, false);
 	}
+	cleanSubItems(mDrillItem);
+	createDrillItem(mDrillItem);
 }
 
 QGraphicsItemGroup* ComponentItem::mainItem()
@@ -55,6 +59,11 @@ QGraphicsItemGroup* ComponentItem::groundPlaneItem()
 	return mGroundPlaneItem;
 }
 
+QGraphicsItemGroup* ComponentItem::drillItem()
+{
+	return mDrillItem;
+}
+
 void ComponentItem::cleanSubItems(QGraphicsItemGroup* inOutItem)
 {
 	for (auto item : inOutItem->childItems())
@@ -62,4 +71,10 @@ void ComponentItem::cleanSubItems(QGraphicsItemGroup* inOutItem)
 		inOutItem->removeFromGroup(item);
 		delete item;
 	}
+}
+
+void ComponentItem::createDrillItem(QGraphicsItemGroup* inOutItem)
+{
+	(void)inOutItem;
+	//empty
 }

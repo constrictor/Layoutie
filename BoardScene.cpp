@@ -76,6 +76,9 @@ BoardScene::BoardScene(SLFormat::Board* inBoard, BoardView* inParent)
 		addItem(mLayerGroups[layer]);
 	}
 
+	mDrillHoles = new QGraphicsItemGroup;
+	addItem(mDrillHoles);
+
 	// components on layers
 	for (auto comp : mBoard->components())
 	{
@@ -88,6 +91,7 @@ BoardScene::BoardScene(SLFormat::Board* inBoard, BoardView* inParent)
 			{
 				mGroundPlanes[layer]->addToGroup(item->groundPlaneItem());
 			}
+			mDrillHoles->addToGroup(item->drillItem());
 		}
 	}
 
