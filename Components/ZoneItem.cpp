@@ -69,10 +69,7 @@ void ZoneItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 	{
 		auto point = mComponent->points()[0];
 		QPointF pointF(point.x, - point.y);
-		if (pointF != prev)
-		{
-			addLineToPolygon(poly1, poly2, prev, pointF, radius);
-		}
+		addLineToPolygon(poly1, poly2, prev, pointF, radius);
 	}
 	poly1 << poly1.first();
 	poly2 << poly2.first();
@@ -109,6 +106,8 @@ void ZoneItem::addLineToPolygon(QPolygonF& outPolygon1, QPolygonF& outPolygon2, 
 {
 	QPointF off;
 	off = inPoint1 - inPoint2;
+	if (off.manhattanLength() == 0)
+		return;
 	{
 		auto tmp = -off.x();
 		off.setX(off.y());
