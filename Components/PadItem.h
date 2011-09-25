@@ -38,9 +38,11 @@ protected:
 private:
 	void createCircularItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 	void createPolygonItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
-	void createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround, bool inHorizontal);
+	void createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 
+	void createCircularThermaItem(QGraphicsItemGroup* inOutItem);
 	void createPolygonThermaltem(QGraphicsItemGroup* inOutItem);
+	void createRoundedThermalItem(QGraphicsItemGroup* inOutItem);
 
 	QColor	color(bool inIsMainNotGround) const;
 

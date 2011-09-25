@@ -36,29 +36,51 @@ PadItem::PadItem(SLFormat::PadComponent* inComponent)
 
 void PadItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 {
-	(void)inOutItem;
-	(void)inIsMainNotGround;
-	switch (mComponent->padType())
+	if (!inIsMainNotGround && mComponent->thermal())
 	{
-		case SLFormat::PadType::Circular:
-			createCircularItem(inOutItem, inIsMainNotGround);
-			break;
-		case SLFormat::PadType::Octagon:
-		case SLFormat::PadType::Square:
-		case SLFormat::PadType::OctagonHorizontal:
-		case SLFormat::PadType::OctagonVertical:
-		case SLFormat::PadType::SquareHorizontal:
-		case SLFormat::PadType::SquareVertical:
-			!inIsMainNotGround && mComponent->thermal() ? createPolygonThermaltem(inOutItem) : createPolygonItem(inOutItem, inIsMainNotGround);
-			break;
-		case SLFormat::PadType::RoundedHorizontal:
-			createRoundedItem(inOutItem, inIsMainNotGround, true);
-			break;
-		case SLFormat::PadType::RoundedVertical:
-			createRoundedItem(inOutItem, inIsMainNotGround, false);
-			break;
-		default:
-			assert(false);
+		switch (mComponent->padType())
+		{
+			case SLFormat::PadType::Circular:
+				createCircularThermaItem(inOutItem);
+				break;
+			case SLFormat::PadType::Octagon:
+			case SLFormat::PadType::Square:
+			case SLFormat::PadType::OctagonHorizontal:
+			case SLFormat::PadType::OctagonVertical:
+			case SLFormat::PadType::SquareHorizontal:
+			case SLFormat::PadType::SquareVertical:
+				createPolygonThermaltem(inOutItem);
+				break;
+			case SLFormat::PadType::RoundedHorizontal:
+			case SLFormat::PadType::RoundedVertical:
+				createRoundedThermalItem(inOutItem);
+				break;
+			default:
+				assert(false);
+		}
+	}
+	else
+	{
+		switch (mComponent->padType())
+		{
+			case SLFormat::PadType::Circular:
+				createCircularItem(inOutItem, inIsMainNotGround);
+				break;
+			case SLFormat::PadType::Octagon:
+			case SLFormat::PadType::Square:
+			case SLFormat::PadType::OctagonHorizontal:
+			case SLFormat::PadType::OctagonVertical:
+			case SLFormat::PadType::SquareHorizontal:
+			case SLFormat::PadType::SquareVertical:
+				createPolygonItem(inOutItem, inIsMainNotGround);
+				break;
+			case SLFormat::PadType::RoundedHorizontal:
+			case SLFormat::PadType::RoundedVertical:
+				createRoundedItem(inOutItem, inIsMainNotGround);
+				break;
+			default:
+				assert(false);
+		}
 	}
 }
 
@@ -86,7 +108,6 @@ QColor PadItem::color(bool inIsMainNotGround) const
 
 void PadItem::createCircularItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 {
-	//TODO: Thermal pad support
 	float radius = mComponent->externalRadius();
 	if (!inIsMainNotGround)
 	{
@@ -126,9 +147,8 @@ void PadItem::createPolygonItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotG
 	inOutItem->addToGroup(main);
 }
 
-void PadItem::createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround, bool inHorizontal)
+void PadItem::createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 {
-	//TODO: Thermal pad support
 	const float realRadius = mComponent->externalRadius();
 	float radius = realRadius;
 	float radiusDiff = 0;
@@ -140,48 +160,51 @@ void PadItem::createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotG
 	QColor col(color(inIsMainNotGround));
 	QBrush br(col);
 	QPen p(col);
-	
-	QRectF baseRect(mComponent->center().x - radius,
-		- mComponent->center().y - radius,
-		2 * radius,
-		2 * radius);
-	QRectF rect1(mComponent->points()[0].x - radius, -mComponent->points()[0].y - radius, 2 * radius, 2 * radius);
-	QRectF rect2(mComponent->points()[1].x - radius, -mComponent->points()[1].y - radius, 2 * radius, 2 * radius);
-	if (inHorizontal)
+
 	{
-		baseRect.adjust(radiusDiff, 0, -radiusDiff, 0);
+		QRectF rect1(mComponent->points()[0].x - radius, -mComponent->points()[0].y - radius, 2 * radius, 2 * radius);
+		QPainterPath path;
+		path.moveTo(mComponent->points()[0].x, -mComponent->points()[0].y);
+		path.arcTo(rect1, -mComponent->angle() - 90, 180);
+		path.closeSubpath();
+		auto pathItem = new QGraphicsPathItem(path);
+		pathItem->setBrush(br);
+		pathItem->setPen(p);
+		inOutItem->addToGroup(pathItem);
 	}
-	else
 	{
-		baseRect.adjust(0, radiusDiff, 0, -radiusDiff);
+		QRectF rect2(mComponent->points()[1].x - radius, -mComponent->points()[1].y - radius, 2 * radius, 2 * radius);
+		QPainterPath path;
+		path.moveTo(mComponent->points()[1].x, -mComponent->points()[1].y);
+		path.arcTo(rect2, -mComponent->angle() + 90, 180);
+		path.closeSubpath();
+		auto pathItem = new QGraphicsPathItem(path);
+		pathItem->setBrush(br);
+		pathItem->setPen(p);
+		inOutItem->addToGroup(pathItem);
 	}
-	QPolygonF poly;
 	{
+		QPolygonF poly;
 		QPointF p1(mComponent->points()[0].x, -mComponent->points()[0].y);
 		QPointF p2(mComponent->points()[1].x, -mComponent->points()[1].y);
 		QPointF halfPoint((p1.y() - p2.y()) / 2, -(p1.x() - p2.x()) / 2);
+
 		if (!inIsMainNotGround)
 		{
 			halfPoint.setX(halfPoint.x() * radius / realRadius);
 			halfPoint.setY(halfPoint.y() * radius / realRadius);
 		}
+
 		poly << p1 + halfPoint;
 		poly << p1 - halfPoint;
 		poly << p2 - halfPoint;
 		poly << p2 + halfPoint;
+
+		auto polyItem = new QGraphicsPolygonItem(poly);
+		polyItem->setBrush(br);
+		polyItem->setPen(p);
+		inOutItem->addToGroup(polyItem);
 	}
-	auto r1 = new QGraphicsEllipseItem(rect1);
-	r1->setBrush(br);
-	r1->setPen(p);
-	inOutItem->addToGroup(r1);
-	auto r2 = new QGraphicsEllipseItem(rect2);
-	r2->setBrush(br);
-	r2->setPen(p);
-	inOutItem->addToGroup(r2);
-	auto r3 = new QGraphicsPolygonItem(poly);
-	r3->setBrush(br);
-	r3->setPen(p);
-	inOutItem->addToGroup(r3);
 }
 
 void PadItem::createDrillItem(QGraphicsItemGroup* inOutItem)
@@ -227,7 +250,7 @@ void PadItem::createPolygonThermaltem(QGraphicsItemGroup* inOutItem)
 	QColor col(color(false));
 	QPen p(col);
 	QBrush br(col);
-	for (auto track : mComponent->thermalTracks())
+	for (auto track : mComponent->thermalPolygons())
 	{
 		QPolygonF poly;
 
@@ -240,5 +263,103 @@ void PadItem::createPolygonThermaltem(QGraphicsItemGroup* inOutItem)
 		main->setBrush(br);
 		main->setPen(p);
 		inOutItem->addToGroup(main);
+	}
+}
+
+static float squareLength(const QPointF& inPoint)
+{
+	return inPoint.x() * inPoint.x() + inPoint.y() * inPoint.y();
+}
+
+void PadItem::createRoundedThermalItem(QGraphicsItemGroup* inOutItem)
+{
+	const float realRadius = mComponent->externalRadius();
+	float radiusDiff = mComponent->groundPlaneDistance();
+	float radius = realRadius + radiusDiff;
+	QColor col(color(false));
+	QBrush br(col);
+	QPen p(col);
+
+	const float thermalAngleOffset = std::atan2(mComponent->thermalTrackRadius(), mComponent->externalRadius() + mComponent->groundPlaneDistance()) * 180 / M_PI;
+	const float thermalAngle = 90 - thermalAngleOffset;
+	unsigned pointNum = 0;
+	for (auto point : mComponent->points())
+	{
+		const QRectF rect(point.x - radius, -point.y - radius, 2 * radius, 2 * radius);
+
+		for (int unused = 0; unused < 2; unused++)
+		{
+			float nextAngleShift = -mComponent->angle() + (pointNum / 2 ? 90 : -90) + (pointNum % 2 ? 90 + thermalAngleOffset : 0);
+
+			QPainterPath path;
+
+			// find a helper point. It's more precise than calculate it without Qt.
+			path.arcMoveTo(rect, nextAngleShift);
+			QPointF C = path.currentPosition();
+			path.arcMoveTo(rect, nextAngleShift + thermalAngle);
+			QPointF B = path.currentPosition();
+			QPointF A(mComponent->points()[pointNum/2].x, -mComponent->points()[pointNum/2].y);
+			QPointF pos;
+			if (pointNum % 2)
+			{
+				float k = squareLength(B - C) / 2 / squareLength(B - A);
+				pos = B * (1 - k) + A * k;
+			}
+			else
+			{
+				float k = squareLength(B - C) / 2 / squareLength(C - A);
+				pos = C * (1 - k) + A * k;
+			}
+			path.moveTo(pos);
+
+			path.arcTo(rect, nextAngleShift, thermalAngle);
+
+			auto pathItem = new QGraphicsPathItem(path);
+			pathItem->setBrush(br);
+			pathItem->setPen(p);
+			inOutItem->addToGroup(pathItem);
+
+			pointNum++;
+		}
+	}
+	{
+		createPolygonThermaltem(inOutItem);
+	}
+}
+
+void PadItem::createCircularThermaItem(QGraphicsItemGroup* inOutItem)
+{
+	const float realRadius = mComponent->externalRadius();
+	float radiusDiff = mComponent->groundPlaneDistance();
+	float radius = realRadius + radiusDiff;
+	QColor col(color(false));
+	QBrush br(col);
+	QPen p(col);
+
+	const float thermalAngleOffset = std::atan2(mComponent->thermalTrackRadius(), mComponent->externalRadius() + mComponent->groundPlaneDistance()) * 180 / M_PI;
+	const float thermalAngle = 90 - 2 * thermalAngleOffset;
+	const QRectF rect(mComponent->center().x - radius, -mComponent->center().y - radius, 2 * radius, 2 * radius);
+
+	float startAngle = -mComponent->angle() + thermalAngleOffset - 90;
+	for (int unused = 0; unused < 4; unused++)
+	{
+		QPainterPath path;
+
+		// find a helper point. It's more precise than calculate it without Qt.
+		path.arcMoveTo(rect, startAngle);
+		auto pos1 = path.currentPosition();
+		path.arcMoveTo(rect, startAngle + thermalAngle);
+		auto pos2 = path.currentPosition();
+		QPointF off = (pos1 - pos2) / 2;
+		QPointF res = (pos1 + pos2) / 2 - QPointF(off.y(), -off.x());
+		path.moveTo(res);
+
+		path.arcTo(rect, startAngle, thermalAngle);
+		auto pathItem = new QGraphicsPathItem(path);
+		pathItem->setBrush(br);
+		pathItem->setPen(p);
+		inOutItem->addToGroup(pathItem);
+
+		startAngle += 90;
 	}
 }
