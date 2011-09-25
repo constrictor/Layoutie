@@ -22,6 +22,7 @@
 #include "ComponentItem.h"
 
 #include <QPointF>
+#include <QBitmap>
 
 namespace SLFormat
 {
@@ -39,7 +40,9 @@ protected:
 	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 
 private:
-	void	addLineToPolygon(QPolygonF& outPolygon1, QPolygonF& outPolygon2, QPointF inPoint1, QPointF inPoint2, qreal inRadius);
+	void	addLine(QPolygonF& outPolygon, QPainterPath& outPath, QPointF inPoint1, QPointF inPoint2, qreal inRadius);
+
+	QBitmap createHatchedBrushTexture(float inHatchedWidth);
 
 	SLFormat::ZoneComponent* mComponent;
 };

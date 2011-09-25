@@ -25,6 +25,7 @@
 #include <QBrush>
 #include <QPen>
 #include <QGraphicsItemGroup>
+#include <QPainter>
 
 #include <cmath>
 
@@ -40,10 +41,15 @@ void ZoneItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 	const QColor color = inIsMainNotGround ?
 		gSettings().layerColor(mComponent->layer())
 		: gSettings().backgroundColor();
-	const QBrush br(color);
+	QBrush solidBrush(color);
+	QBrush br(solidBrush);
+	if (mComponent->isHatched())
+	{
+		br.setTexture(createHatchedBrushTexture(mComponent->hatchedWidth()));
+		br.setColor(color);
+	}
 	const QPen p(color);
 
-	//TODO: Hatched zone support
 	float width = mComponent->width();
 	if (!inIsMainNotGround && !mComponent->isCutoutArea())
 	{
@@ -54,14 +60,14 @@ void ZoneItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 	QPointF prev;
 	bool hasPrev = false;
 
-	QPolygonF poly1;
-	QPolygonF poly2;
+	QPolygonF poly;
+	QPainterPath path;
 	for (auto point : mComponent->points())
 	{
 		QPointF pointF(point.x, - point.y);
 		if (hasPrev)
 		{
-			addLineToPolygon(poly1, poly2, prev, pointF, radius);
+			addLine(poly, path, prev, pointF, radius);
 		}
 		hasPrev = true;
 		prev = pointF;
@@ -69,23 +75,25 @@ void ZoneItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 	{
 		auto point = mComponent->points()[0];
 		QPointF pointF(point.x, - point.y);
-		addLineToPolygon(poly1, poly2, prev, pointF, radius);
+		addLine(poly, path, prev, pointF, radius);
 	}
-	poly1 << poly1.first();
-	poly2 << poly2.first();
+	poly << poly.first();
 
-	auto track = new QGraphicsPolygonItem;
-	track->setPolygon(poly1);
-	track->setFillRule(Qt::WindingFill);
-	track->setBrush(br);
-	track->setPen(p);
-	inOutItem->addToGroup(track);
-	track = new QGraphicsPolygonItem;
-	track->setPolygon(poly2);
-	track->setFillRule(Qt::WindingFill);
-	track->setBrush(br);
-	track->setPen(p);
-	inOutItem->addToGroup(track);
+	{
+		auto track = new QGraphicsPolygonItem;
+		track->setPolygon(poly);
+		track->setFillRule(Qt::WindingFill);
+		track->setBrush(br);
+		track->setPen(p);
+		inOutItem->addToGroup(track);
+	}
+	{
+		path.setFillRule(Qt::WindingFill);
+		auto pathItem = new QGraphicsPathItem(path);
+		pathItem->setPen(p);
+		pathItem->setBrush(solidBrush);
+		inOutItem->addToGroup(pathItem);
+	}
 
 	for (auto point : mComponent->points())
 	{
@@ -96,13 +104,13 @@ void ZoneItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 					width,
 			  width);
 		auto circle = new QGraphicsEllipseItem(rect);
-		circle->setBrush(br);
+		circle->setBrush(solidBrush);
 		circle->setPen(p);
 		inOutItem->addToGroup(circle);
 	}
 }
 
-void ZoneItem::addLineToPolygon(QPolygonF& outPolygon1, QPolygonF& outPolygon2, QPointF inPoint1, QPointF inPoint2, qreal inRadius)
+void ZoneItem::addLine(QPolygonF& outPolygon, QPainterPath& outPath, QPointF inPoint1, QPointF inPoint2, qreal inRadius)
 {
 	QPointF off;
 	off = inPoint1 - inPoint2;
@@ -116,8 +124,25 @@ void ZoneItem::addLineToPolygon(QPolygonF& outPolygon1, QPolygonF& outPolygon2, 
 		off.setX(off.x() * koef);
 		off.setY(off.y() * koef);
 	}
-	outPolygon1 << inPoint1 - off;
-	outPolygon2 << inPoint1 + off;
-	outPolygon1 << inPoint2 - off;
-	outPolygon2 << inPoint2 + off;
+	outPolygon << inPoint1 - off;
+	outPolygon << inPoint2 - off;
+	QPainterPath path;
+	path.moveTo(inPoint1 - off);
+	path.lineTo(inPoint1 + off);
+	path.lineTo(inPoint2 + off);
+	path.lineTo(inPoint2 - off);
+	path.closeSubpath();
+	outPath.addPath(path);
+}
+
+QBitmap ZoneItem::createHatchedBrushTexture(float inHatchedWidth)
+{
+	QImage image(inHatchedWidth, inHatchedWidth, QImage::Format_Mono);
+	image.fill(1);
+	QPainter p(&image);
+	p.setPen(QPen(Qt::black));
+	p.fillRect(0, 0, inHatchedWidth, inHatchedWidth / 2, Qt::SolidPattern);
+	p.fillRect(0, inHatchedWidth / 2, inHatchedWidth / 2, inHatchedWidth / 2, Qt::SolidPattern);
+	QBitmap res = QBitmap::fromImage(image, Qt::AutoColor);
+	return res;
 }
