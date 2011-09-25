@@ -39,7 +39,9 @@ private:
 	void createCircularItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 	void createPolygonItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 	void createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround, bool inHorizontal);
-	
+
+	void createPolygonThermaltem(QGraphicsItemGroup* inOutItem);
+
 	QColor	color(bool inIsMainNotGround) const;
 
 	SLFormat::PadComponent* mComponent;

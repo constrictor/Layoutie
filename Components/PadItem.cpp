@@ -27,6 +27,7 @@
 #include <QGraphicsEllipseItem>
 
 #include <assert.h>
+#include <cmath>
 
 PadItem::PadItem(SLFormat::PadComponent* inComponent)
 	:mComponent(inComponent)
@@ -48,7 +49,7 @@ void PadItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 		case SLFormat::PadType::OctagonVertical:
 		case SLFormat::PadType::SquareHorizontal:
 		case SLFormat::PadType::SquareVertical:
-			createPolygonItem(inOutItem, inIsMainNotGround);
+			!inIsMainNotGround && mComponent->thermal() ? createPolygonThermaltem(inOutItem) : createPolygonItem(inOutItem, inIsMainNotGround);
 			break;
 		case SLFormat::PadType::RoundedHorizontal:
 			createRoundedItem(inOutItem, inIsMainNotGround, true);
@@ -105,7 +106,6 @@ void PadItem::createCircularItem(QGraphicsItemGroup* inOutItem, bool inIsMainNot
 
 void PadItem::createPolygonItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 {
-	//TODO: Thermal pad support
 	QPolygonF poly;
 
 	for (auto point : mComponent->points())
@@ -145,19 +145,30 @@ void PadItem::createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotG
 		- mComponent->center().y - radius,
 		2 * radius,
 		2 * radius);
-	QRectF rect1;
-	QRectF rect2 = baseRect;
+	QRectF rect1(mComponent->points()[0].x - radius, -mComponent->points()[0].y - radius, 2 * radius, 2 * radius);
+	QRectF rect2(mComponent->points()[1].x - radius, -mComponent->points()[1].y - radius, 2 * radius, 2 * radius);
 	if (inHorizontal)
 	{
-		rect1 = baseRect.adjusted(-realRadius, 0, -realRadius, 0);
-		rect2 = baseRect.adjusted(realRadius, 0, realRadius, 0);
 		baseRect.adjust(radiusDiff, 0, -radiusDiff, 0);
 	}
 	else
 	{
-		rect1 = baseRect.adjusted(0, -realRadius, 0, -realRadius);
-		rect2 = baseRect.adjusted(0, realRadius, 0, realRadius);
 		baseRect.adjust(0, radiusDiff, 0, -radiusDiff);
+	}
+	QPolygonF poly;
+	{
+		QPointF p1(mComponent->points()[0].x, -mComponent->points()[0].y);
+		QPointF p2(mComponent->points()[1].x, -mComponent->points()[1].y);
+		QPointF halfPoint((p1.y() - p2.y()) / 2, -(p1.x() - p2.x()) / 2);
+		if (!inIsMainNotGround)
+		{
+			halfPoint.setX(halfPoint.x() * radius / realRadius);
+			halfPoint.setY(halfPoint.y() * radius / realRadius);
+		}
+		poly << p1 + halfPoint;
+		poly << p1 - halfPoint;
+		poly << p2 - halfPoint;
+		poly << p2 + halfPoint;
 	}
 	auto r1 = new QGraphicsEllipseItem(rect1);
 	r1->setBrush(br);
@@ -167,7 +178,7 @@ void PadItem::createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotG
 	r2->setBrush(br);
 	r2->setPen(p);
 	inOutItem->addToGroup(r2);
-	auto r3 = new QGraphicsRectItem(baseRect);
+	auto r3 = new QGraphicsPolygonItem(poly);
 	r3->setBrush(br);
 	r3->setPen(p);
 	inOutItem->addToGroup(r3);
@@ -208,5 +219,26 @@ void PadItem::createDrillItem(QGraphicsItemGroup* inOutItem)
 		line2->setPen(p);
 		inOutItem->addToGroup(line1);
 		inOutItem->addToGroup(line2);
+	}
+}
+
+void PadItem::createPolygonThermaltem(QGraphicsItemGroup* inOutItem)
+{
+	QColor col(color(false));
+	QPen p(col);
+	QBrush br(col);
+	for (auto track : mComponent->thermalTracks())
+	{
+		QPolygonF poly;
+
+		for (auto point : track)
+		{
+			poly << QPointF(point.x, - point.y);
+		}
+		auto main = new QGraphicsPolygonItem(poly);
+
+		main->setBrush(br);
+		main->setPen(p);
+		inOutItem->addToGroup(main);
 	}
 }

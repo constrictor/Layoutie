@@ -63,11 +63,19 @@ ProjectView::ProjectView(QWidget* inParent, const QString& inFileName)
 	mainLayout->addWidget(tabs);
 	this->setLayout(mainLayout);
 
-	for (auto board : mProject.boards())
+	try
 	{
-		auto boardView = new BoardView(tabs, board);
-		connect(boardView, SIGNAL(modified()), SLOT(boardModified()));
-		tabs->addTab(boardView, QString::fromLocal8Bit(board->name().c_str()));
+		for (auto board : mProject.boards())
+		{
+			auto boardView = new BoardView(tabs, board);
+			connect(boardView, SIGNAL(modified()), SLOT(boardModified()));
+			tabs->addTab(boardView, QString::fromLocal8Bit(board->name().c_str()));
+		}
+	}
+	catch(SLFormat::Exceptions::LayoutException& e)
+	{
+		QMessageBox::critical(this, tr("Cannot open file"), tr("Cannot open %1:\n Internal error occurred:\n%2") .arg(prettyFileName()) .arg(e.what()));
+		throw;
 	}
 }
 
