@@ -37,6 +37,7 @@ Settings::Settings()
 {
 	mGridMainPen = QPen(QColor(0x404040), 2.0);
 	mGridSubPen = QPen(QColor(0x404040));
+	mGridOriginPen = QPen(QColor(0x707070), 0, Qt::DashLine);
 }
 
 
@@ -126,6 +127,11 @@ const QPen& Settings::gridMainPen() const
 const QPen& Settings::gridSubPen() const
 {
 	return mGridSubPen;
+}
+
+const QPen& Settings::gridOriginPen() const
+{
+	return mGridOriginPen;
 }
 
 unsigned Settings::numGridSubdivisions() const

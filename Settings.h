@@ -35,6 +35,7 @@ public:
 	//QColor gridColor() const;
 	const QPen& gridMainPen() const;
 	const QPen& gridSubPen() const;
+	const QPen& gridOriginPen() const;
 	unsigned numGridSubdivisions() const;
 
 	unsigned layerFromOrderNumber(int inOrderNum) const;
@@ -51,6 +52,7 @@ private:
 
 	QPen mGridMainPen;
 	QPen mGridSubPen;
+	QPen mGridOriginPen;
 };
 
 #endif //SETTINGS_H

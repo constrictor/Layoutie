@@ -38,22 +38,18 @@ void BoardGrid::updateGrid()
 		delete mainLine;
 	}
 	mMainLines.clear();
-	double gridSize = mBoard->gridSize();
+	unsigned gridSize = static_cast<unsigned>(mBoard->gridSize());
 	unsigned numSubdivisions = gSettings().numGridSubdivisions();
-
-	SLFormat::UIntPoint startPoint = mBoard->origin(); //TODO: origin support
 
 	const QPen& subLinePen(gSettings().gridSubPen());
 
 	// vertical
 	{
-		double currPos = startPoint.x;
-		
 		unsigned i = 0;
 		while(true)
 		{
 			i++;
-			currPos = startPoint.x + i * gridSize;
+			float currPos = i * gridSize;
 			if (currPos >= mBoard->size().x)
 				break;
 			if (numSubdivisions == 0 || i % numSubdivisions != 0)
@@ -67,13 +63,11 @@ void BoardGrid::updateGrid()
 
 	// horizontal
 	{
-		double currPos = startPoint.y;
-
 		unsigned i = 0;
 		while(true)
 		{
 			i++;
-			currPos = startPoint.y + i * gridSize;
+			double currPos = i * gridSize;
 			if (currPos >= mBoard->size().y)
 				break;
 			if (numSubdivisions == 0 || i % numSubdivisions != 0)
@@ -94,13 +88,11 @@ void BoardGrid::updateGrid()
 		
 		// vertical
 		{
-			double currPos = startPoint.x;
-			
 			unsigned i = 0;
 			while(true)
 			{
 				i += numSubdivisions;
-				currPos = startPoint.x + i * gridSize;
+				double currPos = i * gridSize;
 				if (currPos >= mBoard->size().x)
 					break;
 				auto line = new QGraphicsLineItem(currPos, width / 2, currPos, mBoard->size().y - width / 2);
@@ -112,19 +104,43 @@ void BoardGrid::updateGrid()
 
 		// horizontal
 		{
-			double currPos = startPoint.y;
-
 			unsigned i = 0;
 			while(true)
 			{
 				i += numSubdivisions;
-				currPos = startPoint.y + i * gridSize;
+				double currPos = i * gridSize;
 				if (currPos >= mBoard->size().y)
 					break;
 				auto line = new QGraphicsLineItem(width / 2, currPos, mBoard->size().x - width / 2, currPos);
 				line->setPen(mainLinePen);
 				this->addToGroup(line);
 				mMainLines.push_back(line);
+			}
+		}
+	}
+
+	if (mBoard->origin().x || mBoard->origin().y)
+	{
+		const QPen& originPen(gSettings().gridOriginPen());
+		// vertical
+		{
+			float currPos = mBoard->origin().x / 1000;
+			if (currPos < mBoard->size().x)
+			{
+				auto line = new QGraphicsLineItem(currPos, 0, currPos, mBoard->size().y);
+				line->setPen(originPen);
+				this->addToGroup(line);
+			}
+		}
+
+		// horizontal
+		{
+			double currPos = mBoard->origin().y / 1000;
+			if (currPos < mBoard->size().y)
+			{
+				auto line = new QGraphicsLineItem(0, currPos, mBoard->size().x, currPos);
+				line->setPen(originPen);
+				this->addToGroup(line);
 			}
 		}
 	}
