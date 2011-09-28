@@ -35,9 +35,9 @@ Settings& gSettings()
 
 Settings::Settings()
 {
-	mGridMainPen = QPen(QColor(0x404040), 2.0);
+	mGridMainPen = QPen(QColor(0x707070));
 	mGridSubPen = QPen(QColor(0x404040));
-	mGridOriginPen = QPen(QColor(0x707070), 0, Qt::DashLine);
+	mGridOriginPen = QPen(QColor(0xA0A0A0), 0, Qt::DashLine);
 }
 
 

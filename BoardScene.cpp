@@ -110,5 +110,4 @@ BoardScene::~BoardScene()
 
 void BoardScene::zoomed()
 {
-	mGrid->updateGrid();
 }

@@ -42,6 +42,9 @@ void BoardGrid::updateGrid()
 	unsigned numSubdivisions = gSettings().numGridSubdivisions();
 
 	const QPen& subLinePen(gSettings().gridSubPen());
+	const QPen& mainLinePen(gSettings().gridMainPen());
+
+	const QPointF origin(mBoard->origin().x / 1000, mBoard->origin().y / 1000);
 
 	// vertical
 	{
@@ -49,15 +52,23 @@ void BoardGrid::updateGrid()
 		while(true)
 		{
 			i++;
-			float currPos = i * gridSize;
+			float currPos = origin.x() + i * gridSize;
 			if (currPos >= mBoard->size().x)
 				break;
-			if (numSubdivisions == 0 || i % numSubdivisions != 0)
-			{
-				auto line = new QGraphicsLineItem(currPos, 0, currPos, mBoard->size().y);
-				line->setPen(subLinePen);
-				this->addToGroup(line);
-			}
+			auto line = new QGraphicsLineItem(currPos, 0, currPos, mBoard->size().y);
+			line->setPen((numSubdivisions == 0 || i % numSubdivisions != 0) ? subLinePen : mainLinePen);
+			this->addToGroup(line);
+		}
+		i = 0;
+		while(true)
+		{
+			i++;
+			float currPos = origin.x() - i * gridSize;
+			if (currPos <= 0)
+				break;
+			auto line = new QGraphicsLineItem(currPos, 0, currPos, mBoard->size().y);
+			line->setPen((numSubdivisions == 0 || i % numSubdivisions != 0) ? subLinePen : mainLinePen);
+			this->addToGroup(line);
 		}
 	}
 
@@ -67,58 +78,27 @@ void BoardGrid::updateGrid()
 		while(true)
 		{
 			i++;
-			double currPos = i * gridSize;
+			float currPos = origin.y() + i * gridSize;
 			if (currPos >= mBoard->size().y)
 				break;
-			if (numSubdivisions == 0 || i % numSubdivisions != 0)
-			{
-				auto line = new QGraphicsLineItem(0, currPos, mBoard->size().x, currPos);
-				line->setPen(subLinePen);
-				this->addToGroup(line);
-			}
+			auto line = new QGraphicsLineItem(0, currPos, mBoard->size().x, currPos);
+			line->setPen((numSubdivisions == 0 || i % numSubdivisions != 0) ? subLinePen : mainLinePen);
+			this->addToGroup(line);
+		}
+		i = 0;
+		while(true)
+		{
+			i++;
+			float currPos = origin.y() - i * gridSize;
+			if (currPos <= 0)
+				break;
+			auto line = new QGraphicsLineItem(0, currPos, mBoard->size().x, currPos);
+			line->setPen((numSubdivisions == 0 || i % numSubdivisions != 0) ? subLinePen : mainLinePen);
+			this->addToGroup(line);
 		}
 	}
 
-	// draw bold lines
-	if (numSubdivisions)
-	{
-		QPen mainLinePen(gSettings().gridMainPen());
-		const double width = mainLinePen.widthF()  / mBoard->zoomLevel();
-		mainLinePen.setWidthF(width);
-		
-		// vertical
-		{
-			unsigned i = 0;
-			while(true)
-			{
-				i += numSubdivisions;
-				double currPos = i * gridSize;
-				if (currPos >= mBoard->size().x)
-					break;
-				auto line = new QGraphicsLineItem(currPos, width / 2, currPos, mBoard->size().y - width / 2);
-				line->setPen(mainLinePen);
-				this->addToGroup(line);
-				mMainLines.push_back(line);
-			}
-		}
-
-		// horizontal
-		{
-			unsigned i = 0;
-			while(true)
-			{
-				i += numSubdivisions;
-				double currPos = i * gridSize;
-				if (currPos >= mBoard->size().y)
-					break;
-				auto line = new QGraphicsLineItem(width / 2, currPos, mBoard->size().x - width / 2, currPos);
-				line->setPen(mainLinePen);
-				this->addToGroup(line);
-				mMainLines.push_back(line);
-			}
-		}
-	}
-
+	// origin point
 	if (mBoard->origin().x || mBoard->origin().y)
 	{
 		const QPen& originPen(gSettings().gridOriginPen());
