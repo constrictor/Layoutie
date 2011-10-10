@@ -125,7 +125,7 @@ void MainWindow::tabChanged()
 	QString title;
 	if (proj)
 	{
-		title = tr("%1 - %2") .arg(cAppName) .arg(proj->prettyFileName());
+		title = tr("%1 - %2") .arg(proj->prettyFileName()) .arg(cAppName);
 	}
 	else
 	{
