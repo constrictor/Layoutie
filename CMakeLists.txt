@@ -4,7 +4,8 @@ project(layoutie)
 find_package(Sprint REQUIRED)
 
 set (QT_MIN_VERSION "4.7.0")
-find_package(Qt4 REQUIRED)
+find_package(Qt4 REQUIRED QtCore QtGui)
+include(${QT_USE_FILE})
 
 set(LAYOUTIE_SOURCES
 	main.cpp
@@ -57,7 +58,6 @@ QT4_WRAP_UI(LAYOUTIE_FORMS_HEADERS ${LAYOUTIE_FORMS})
 QT4_ADD_RESOURCES(LAYOUTIE_RESOURCES_RCC ${LAYOUTIE_RESOURCES})
 
 
-include(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${SPRINT_INCLUDE_DIR} ${QT4_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 

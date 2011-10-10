@@ -39,7 +39,7 @@ private slots:
 	void	open();
 	void	save();
 	void	saveAs();
-	void	close();
+	void	closeCurrent();
 	void	tabChanged();
 	bool	closeTab(int inIndex);
 	void	tabModified(bool inValue);
@@ -48,6 +48,7 @@ protected:
 private:
 	Ui::MainWindow *ui;
 
+	bool	doCloseTab(int inIndex, bool inCloseLast);
 	ProjectView* project(int inIndex);
 	ProjectView* currentProject();
 	void	newTab(const QString& inFileName);

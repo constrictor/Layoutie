@@ -24,6 +24,8 @@
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
+	a.setApplicationName(QApplication::tr("Layoutie"));
+	a.setOrganizationName(QApplication::tr("Layoutie"));
 
 	SLFormat::Exceptions::GenerateExceptions();
 	SLFormat::Exceptions::GenerateDevExceptions();

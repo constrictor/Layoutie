@@ -22,8 +22,7 @@
 
 #include <QDir>
 #include <QFileDialog>
-
-const QString cAppName = MainWindow::tr("Layoutie");
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *inParent)
 	: QMainWindow(inParent),
@@ -34,10 +33,14 @@ MainWindow::MainWindow(QWidget *inParent)
 	connect(ui->action_Open, SIGNAL(triggered(bool)), SLOT(open()));
 	connect(ui->action_Save, SIGNAL(triggered(bool)), SLOT(save()));
 	connect(ui->actionSave_As, SIGNAL(triggered(bool)), SLOT(saveAs()));
-	connect(ui->action_Close, SIGNAL(triggered(bool)), SLOT(close()));
+	connect(ui->action_Close, SIGNAL(triggered(bool)), SLOT(closeCurrent()));
 	connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(tabChanged()));
 	connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
 	mDir = QDir::homePath(); //TODO: Save current dir
+
+	QSettings settings;
+	restoreGeometry(settings.value("geometry").toByteArray());
+	restoreState(settings.value("windowState").toByteArray());
 
 	newFile();
 }
@@ -75,11 +78,16 @@ void MainWindow::open()
 	{
 		return;
 	}
-	newTab(fileName);
-	if (ui->tabWidget->count() == 2 && project(0)->isUnused())
+
 	{
-		closeTab(0);
+		auto proj = currentProject();
+		if (proj && proj->isUnused())
+		{
+			doCloseTab(ui->tabWidget->currentIndex(), true);
+		}
 	}
+
+	newTab(fileName);
 }
 
 void MainWindow::save()
@@ -100,7 +108,7 @@ void MainWindow::saveAs()
 	}
 }
 
-void MainWindow::close()
+void MainWindow::closeCurrent()
 {
 	int index = ui->tabWidget->currentIndex();
 	if (index != -1)
@@ -113,9 +121,12 @@ void MainWindow::closeEvent(QCloseEvent* inOutEvent)
 {
 	while (ui->tabWidget->count())
 	{
-		if (!closeTab(0))
+		if (!doCloseTab(0, true))
 			return;
 	}
+	QSettings settings;
+	settings.setValue("geometry", saveGeometry());
+	settings.setValue("windowState", saveState());
 	QWidget::closeEvent(inOutEvent);
 }
 
@@ -125,11 +136,11 @@ void MainWindow::tabChanged()
 	QString title;
 	if (proj)
 	{
-		title = tr("%1 - %2") .arg(proj->prettyFileName()) .arg(cAppName);
+		title = tr("%1 - %2") .arg(proj->prettyFileName()) .arg(QApplication::applicationName());
 	}
 	else
 	{
-		title = cAppName;
+		title = QApplication::applicationName();
 	}
 	this->setWindowTitle(title);
 }
@@ -148,14 +159,19 @@ ProjectView* MainWindow::currentProject()
 
 bool MainWindow::closeTab(int inIndex)
 {
+	return doCloseTab(inIndex, false);
+}
+
+bool MainWindow::doCloseTab(int inIndex, bool inCloseLast)
+{
 	auto proj = static_cast<ProjectView*>(ui->tabWidget->widget(inIndex));
 	if (!proj->trySaveIfModified())
 		return false;
 	const bool closingLastTab = ui->tabWidget->count() == 1;
-	if (closingLastTab && proj->isUnused())
+	if (closingLastTab && !inCloseLast && proj->isUnused())
 		return false;
 	ui->tabWidget->removeTab(inIndex);
-	if (closingLastTab)
+	if (closingLastTab && !inCloseLast)
 	{
 		newFile();
 	}
