@@ -24,7 +24,7 @@
 
 #include <QPen>
 
-BoardGrid::BoardGrid(SLFormat::Board* inBoard)
+BoardGrid::BoardGrid(const SLFormat::Board* inBoard)
 	: QGraphicsItemGroup(), mBoard(inBoard)
 {
 	updateGrid();

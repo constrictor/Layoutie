@@ -9,6 +9,7 @@ include(${QT_USE_FILE})
 
 set(LAYOUTIE_SOURCES
 	main.cpp
+	BitmapExport.cpp
 	BoardGrid.cpp
 	BoardScene.cpp
 	BoardView.cpp
@@ -27,6 +28,7 @@ set(LAYOUTIE_SOURCES
 )
 
 set(LAYOUTIE_HEADERS
+	BitmapExport.h
 #	BoardGrid.h
 	BoardScene.h
 	BoardView.h
@@ -46,6 +48,7 @@ set(LAYOUTIE_HEADERS
 
 set(LAYOUTIE_FORMS
 	MainWindow.ui
+	BitmapExport.ui
 )
 
 set(LAYOUTIE_RESOURCES

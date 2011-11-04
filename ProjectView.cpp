@@ -56,20 +56,20 @@ ProjectView::ProjectView(QWidget* inParent, const QString& inFileName)
 		}
 	}
 	auto mainLayout = new QVBoxLayout(this);
-	QTabWidget* tabs = new QTabWidget();
-	tabs->setDocumentMode(true);
-	tabs->setTabPosition(QTabWidget::South);
+	mTabWidget = new QTabWidget();
+	mTabWidget->setDocumentMode(true);
+	mTabWidget->setTabPosition(QTabWidget::South);
 
-	mainLayout->addWidget(tabs);
+	mainLayout->addWidget(mTabWidget);
 	this->setLayout(mainLayout);
 
 	try
 	{
 		for (auto board : mProject.boards())
 		{
-			auto boardView = new BoardView(tabs, board);
+			auto boardView = new BoardView(mTabWidget, board);
 			connect(boardView, SIGNAL(modified()), SLOT(boardModified()));
-			tabs->addTab(boardView, QString::fromLocal8Bit(board->name().c_str()));
+			mTabWidget->addTab(boardView, QString::fromLocal8Bit(board->name().c_str()));
 		}
 	}
 	catch(SLFormat::Exceptions::LayoutException& e)
@@ -168,4 +168,11 @@ void ProjectView::setModified(bool inModified)
 	mModified = inModified;
 	if (changed)
 		emit modifiedChanged(inModified);
+}
+
+const SLFormat::Board* ProjectView::activeBoard() const
+{
+	if (mTabWidget->count() == 0)
+		return nullptr;
+	return qobject_cast<BoardView*>(mTabWidget->currentWidget())->board();
 }

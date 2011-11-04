@@ -29,7 +29,7 @@
 
 #include <assert.h>
 
-BoardScene::BoardScene(SLFormat::Board* inBoard, BoardView* inParent)
+BoardScene::BoardScene(const SLFormat::Board* inBoard, QWidget* inParent)
 	:QGraphicsScene(inParent), mBoard(inBoard)
 {
 	this->setSceneRect(0, 0, mBoard->size().x, mBoard->size().y);
@@ -110,4 +110,41 @@ BoardScene::~BoardScene()
 
 void BoardScene::zoomed()
 {
+}
+
+bool BoardScene::isLayerShown(unsigned inLayerNumber) const
+{
+	assert(inLayerNumber < SLFormat::Board::cNumberLayers);
+	return mLayerGroups[inLayerNumber]->isVisible();
+}
+
+
+void BoardScene::showLayer(unsigned inLayerNumber, bool inShow)
+{
+	assert(inLayerNumber < SLFormat::Board::cNumberLayers);
+	mLayerGroups[inLayerNumber]->setVisible(inShow);
+	if (mGroundPlanes[inLayerNumber])
+	{
+		mGroundPlanes[inLayerNumber]->setVisible(inShow && mBoard->isGroundPlaneEnabled(inLayerNumber));
+	}
+}
+
+bool BoardScene::isGridShown() const
+{
+	return mGrid->isVisible();
+}
+
+void BoardScene::showGrid(bool inShow)
+{
+	mGrid->setVisible(inShow);
+}
+
+bool BoardScene::isDrillHolesShown() const
+{
+	return mDrillHoles->isVisible();
+}
+
+void BoardScene::showDrillHoles(bool inShow)
+{
+	mDrillHoles->setVisible(inShow);
 }

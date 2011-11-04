@@ -30,6 +30,7 @@ class Settings
 {
 public:
 	QColor layerColor(int inLayer) const;
+	QString layerName(int inLayer) const;
 	QColor groundPlaneLayerColor(int inLayer) const;
 	QColor backgroundColor() const;
 	//QColor gridColor() const;

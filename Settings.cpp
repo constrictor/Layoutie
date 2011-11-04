@@ -65,6 +65,30 @@ QColor Settings::layerColor(int inLayer) const
 	}
 }
 
+QString Settings::layerName(int inLayer) const
+{
+	switch(inLayer)
+	{
+		case 0:
+			return "Copper (side 1)";
+		case 1:
+			return "Silk screen (side 1)";
+		case 2:
+			return "Copper (side 2)";
+		case 3:
+			return "Silk screen (side 2)";
+		case 4:
+			return "Inner layer 1";
+		case 5:
+			return "Inner layer 2";
+		case 6:
+			return "Outline";
+		default:
+			assert(false);
+			return "";
+	}
+}
+
 QColor Settings::groundPlaneLayerColor(int inLayer) const
 {
 	return layerColor(inLayer).darker(300);

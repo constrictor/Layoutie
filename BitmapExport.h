@@ -16,39 +16,48 @@
  *
  */
 
-#ifndef BOARD_VIEW_H
-#define BOARD_VIEW_H
+#ifndef BITMAPEXPORT_H
+#define BITMAPEXPORT_H
 
-#include <QGraphicsView>
+#include <QDialog>
 
-namespace SLFormat
-{
-	class Board;
+#include <SLBoard.h>
+
+namespace Ui {
+	class BitmapExport;
 }
 
 class BoardScene;
 
-class BoardView : public QGraphicsView
+class QCheckBox;
+
+class BitmapExport : public QDialog
 {
 	Q_OBJECT
+	
 public:
-	BoardView(QWidget* inParent, SLFormat::Board* inBoard);
-	~BoardView();
-
-	SLFormat::Board* board() { return mBoard; }
-	const SLFormat::Board* board() const  { return mBoard; }
-
-signals:
-	void	modified();
+	explicit BitmapExport(QWidget *inParent, const SLFormat::Board* inBoard);
+	~BitmapExport();
 
 protected:
-	virtual void wheelEvent(QWheelEvent* inEvent);
+	virtual void resizeEvent(QResizeEvent* );
+private slots:
+	void	updateView();
+	void	resolutionUnitsChanged();
+
+	void	resolutionSliderChanged(int inValue);
+	void	resolutionEditChanged(const QString& inValue);
+
+	void	accepted();
+	void	rejected();
 
 private:
-	void	updateZoom();
+	Ui::BitmapExport *ui;
 
-	SLFormat::Board* mBoard;
+	QCheckBox*	mLayerCheckBoxes[SLFormat::Board::cNumberLayers];
+
+	const SLFormat::Board*	mBoard;
 	BoardScene*	mScene;
 };
 
-#endif //BOARD_VIEW_H
+#endif // BITMAPEXPORT_H

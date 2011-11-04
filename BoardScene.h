@@ -31,17 +31,22 @@ class BoardScene : public QGraphicsScene
 {
 	Q_OBJECT
 public:
-	BoardScene(SLFormat::Board* inBoard, BoardView* inParent);
+	BoardScene(const SLFormat::Board* inBoard, QWidget* inParent);
 	~BoardScene();
 
 	void zoomed();
-	
-signals:
-	void	modified();
 
+	virtual void	showGrid(bool inShow = true);
+	bool	isGridShown() const;
+
+	virtual void	showLayer(unsigned inLayerNumber, bool inShow = true);
+	bool	isLayerShown(unsigned inLayerNumber) const;
+
+	virtual void	showDrillHoles(bool inShow = true);
+	bool	isDrillHolesShown() const;
 private:
 
-	SLFormat::Board* mBoard;
+	const SLFormat::Board* mBoard;
 	QGraphicsItemGroup* mLayerGroups[SLFormat::Board::cNumberLayers];
 	QGraphicsItemGroup* mGroundPlanes[SLFormat::Board::cNumberLayers];
 	QGraphicsItemGroup* mDrillHoles;

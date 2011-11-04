@@ -22,6 +22,8 @@
 #include <QWidget>
 #include <SLProject.h>
 
+class QTabWidget;
+
 class ProjectView : public QWidget
 {
 	Q_OBJECT
@@ -40,6 +42,8 @@ public:
 	const QString& fileName() const { return mFileName; }
 	QString	prettyFileName() const;
 
+	const SLFormat::Board*	activeBoard() const;
+
 	static const QString cFileNameFilter;
 signals:
 	void	modifiedChanged(bool inValue);
@@ -48,6 +52,8 @@ private slots:
 	void	boardModified();
 private:
 	void	setModified(bool inModified);
+
+	QTabWidget* 	mTabWidget;
 
 	SLFormat::Project mProject;
 	QString	mFileName;

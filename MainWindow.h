@@ -40,6 +40,7 @@ private slots:
 	void	save();
 	void	saveAs();
 	void	closeCurrent();
+	void	exportAsBitmap();
 	void	tabChanged();
 	bool	closeTab(int inIndex);
 	void	tabModified(bool inValue);

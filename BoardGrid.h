@@ -29,12 +29,12 @@ namespace SLFormat
 class BoardGrid : public QGraphicsItemGroup
 {
 public:
-    BoardGrid(SLFormat::Board* inBoard);
+    BoardGrid(const SLFormat::Board* inBoard);
 
 	void updateGrid();
 private:
 
-	SLFormat::Board* mBoard;
+	const SLFormat::Board* mBoard;
 	QVector<QGraphicsItem*> mMainLines;
 };
 

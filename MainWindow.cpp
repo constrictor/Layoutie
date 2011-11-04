@@ -23,6 +23,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QSettings>
+#include "BitmapExport.h"
 
 MainWindow::MainWindow(QWidget *inParent)
 	: QMainWindow(inParent),
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *inParent)
 	connect(ui->action_Close, SIGNAL(triggered(bool)), SLOT(closeCurrent()));
 	connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(tabChanged()));
 	connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
+	connect(ui->action_bitmapExport, SIGNAL(triggered(bool)), SLOT(exportAsBitmap()));
 	mDir = QDir::homePath(); //TODO: Save current dir
 
 	QSettings settings;
@@ -192,4 +194,18 @@ void MainWindow::tabModified(bool inValue)
 		name = '*' + name;
 	}
 	ui->tabWidget->setTabText(index, name);
+}
+
+void MainWindow::exportAsBitmap()
+{
+	auto proj = currentProject();
+	if (!proj)
+		return;
+
+	const SLFormat::Board* board = proj->activeBoard();
+	if (!board)
+		return;
+
+	BitmapExport dlg(this, board);
+	dlg.exec();
 }
