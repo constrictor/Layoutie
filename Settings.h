@@ -23,6 +23,7 @@
 #include <QPen>
 
 class Settings;
+class QSettings;
 
 Settings& gSettings();
 
@@ -46,6 +47,9 @@ public:
 	QColor fullDrillBorderColor();
 	QColor throughDrillBorderColor();
 	QColor throughDrillCrossColor();
+
+	template <typename T> void restoreSettings(T* inObject);
+	template <typename T> void saveSettings(T* inObject);
 private:
 	Settings();
 
@@ -54,6 +58,8 @@ private:
 	QPen mGridMainPen;
 	QPen mGridSubPen;
 	QPen mGridOriginPen;
+
+	QScopedPointer<QSettings> mSettings;
 };
 
 #endif //SETTINGS_H

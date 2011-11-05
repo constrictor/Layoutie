@@ -75,10 +75,13 @@ BitmapExport::BitmapExport(QWidget* inParent, const SLFormat::Board* inBoard)
 
 	connect(ui->buttonBox, SIGNAL(accepted()), SLOT(accepted()));
 	connect(ui->buttonBox, SIGNAL(rejected()), SLOT(rejected()));
+
+	gSettings().restoreSettings(this);
 }
 
 BitmapExport::~BitmapExport()
 {
+	gSettings().saveSettings(this);
 	delete ui;
 }
 
@@ -117,7 +120,7 @@ void BitmapExport::resolutionUnitsChanged()
 	const bool inches = ui->resolutionUnitsComboBox->currentIndex() == 0;
 	if (inches)
 	{
-		int res = ui->resolutionSlider->value() / cCentimetersPerInch; // translate to inches from cm
+		int res = ui->resolutionSlider->value() * cCentimetersPerInch; // translate to inches from cm
 		ui->resolutionSlider->setMinimum(minDPI);
 		ui->resolutionSlider->setMaximum(maxDPI);
 		ui->resolutionSlider->setSingleStep(singleStep);
@@ -126,11 +129,11 @@ void BitmapExport::resolutionUnitsChanged()
 	}
 	else
 	{
-		int res = ui->resolutionSlider->value() * cCentimetersPerInch; // translate to inches from cm
-		ui->resolutionSlider->setMinimum(minDPI * cCentimetersPerInch);
-		ui->resolutionSlider->setMaximum(maxDPI * cCentimetersPerInch);
-		ui->resolutionSlider->setSingleStep(singleStep * cCentimetersPerInch);
-		ui->resolutionSlider->setPageStep(pageStep * cCentimetersPerInch);
+		int res = ui->resolutionSlider->value() / cCentimetersPerInch; // translate to centimeters from inches
+		ui->resolutionSlider->setMinimum(minDPI / cCentimetersPerInch);
+		ui->resolutionSlider->setMaximum(maxDPI / cCentimetersPerInch);
+		ui->resolutionSlider->setSingleStep(singleStep / cCentimetersPerInch);
+		ui->resolutionSlider->setPageStep(pageStep / cCentimetersPerInch);
 		ui->resolutionSlider->setValue(res);
 	}
 }
@@ -204,3 +207,27 @@ void BitmapExport::rejected()
 	setResult(QDialog::DialogCode::Rejected);
 	close();
 }
+
+void BitmapExport::getResolution(int& outUnits, int& outRes)
+{
+	outUnits = ui->resolutionUnitsComboBox->currentIndex();
+
+	bool ok;
+	outRes = ui->resolutionEdit->text().toInt(&ok);
+	if (!ok)
+	{
+		outRes = ui->resolutionSlider->value();
+	}
+}
+
+void BitmapExport::setResolution(int inUnits, int inRes)
+{
+	if (inUnits < 0 || inUnits >= ui->resolutionUnitsComboBox->count())
+		inUnits = 0;
+	ui->resolutionUnitsComboBox->setCurrentIndex(inUnits);
+
+	if (inRes < ui->resolutionSlider->minimum() || inRes > ui->resolutionSlider->maximum())
+		inRes = ui->resolutionSlider->minimum();
+	ui->resolutionSlider->setValue(inRes);
+}
+

@@ -18,9 +18,16 @@
 
 #include "Settings.h"
 
-#include <assert.h>
+#include "MainWindow.h"
+#include "BitmapExport.h"
 
 #include <SLBoard.h>
+
+#include <assert.h>
+
+#include <QSettings>
+#include <QDir>
+#include <ui_BitmapExport.h>
 
 Settings* Settings::mInstance = nullptr;
 
@@ -34,7 +41,9 @@ Settings& gSettings()
 }
 
 Settings::Settings()
+	:mSettings(new QSettings)
 {
+
 	mGridMainPen = QPen(QColor(0x707070));
 	mGridSubPen = QPen(QColor(0x404040));
 	mGridOriginPen = QPen(QColor(0xA0A0A0), 0, Qt::DashLine);
@@ -161,4 +170,59 @@ const QPen& Settings::gridOriginPen() const
 unsigned Settings::numGridSubdivisions() const
 {
 	return 10;
+}
+
+template<>
+void Settings::restoreSettings<MainWindow>(MainWindow* inMainWindow)
+{
+	inMainWindow->restoreGeometry(mSettings->value("MainWindowGeometry").toByteArray());
+	inMainWindow->restoreState(mSettings->value("MainWindowState").toByteArray());
+
+	QString path = mSettings->value("LastPath", QString()).toString();
+	if (path.isEmpty())
+		path = QDir::homePath();
+	inMainWindow->mDir = path;
+}
+
+template<>
+void Settings::saveSettings<MainWindow>(MainWindow* inMainWindow)
+{
+	mSettings->setValue("MainWindowGeometry", inMainWindow->saveGeometry());
+	mSettings->setValue("MainWindowState", inMainWindow->saveState());
+
+	mSettings->setValue("LastPath", inMainWindow->mDir);
+}
+
+template<>
+void Settings::restoreSettings<BitmapExport>(BitmapExport* inWindow)
+{
+	inWindow->restoreGeometry(mSettings->value("BitmapExportWindowGeometry").toByteArray());
+
+	bool ok;
+	int resolution = mSettings->value("BitmapExportResolution", 0).toInt(&ok);
+	if (!ok)
+		resolution = 0;
+	int resolutionUnits = mSettings->value("BitmapExportResolutionUnits", 0).toInt(&ok);
+	if (!ok)
+		resolutionUnits = 0;
+	inWindow->setResolution(resolutionUnits, resolution);
+
+	QString path = mSettings->value("LastBitmapExportPath", QString()).toString();
+	if (path.isEmpty())
+		path = QDir::homePath();
+	inWindow->mDir = path;
+}
+
+template<>
+void Settings::saveSettings<BitmapExport>(BitmapExport* inWindow)
+{
+	mSettings->setValue("BitmapExportWindowGeometry", inWindow->saveGeometry());
+
+	int resolutionUnits;
+	int resolution;
+	inWindow->getResolution(resolutionUnits, resolution);
+	mSettings->setValue("BitmapExportResolution", resolution);
+	mSettings->setValue("BitmapExportResolutionUnits", resolutionUnits);
+
+	mSettings->setValue("LastBitmapExportPath", inWindow->mDir);
 }

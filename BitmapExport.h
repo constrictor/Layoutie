@@ -34,7 +34,8 @@ class QCheckBox;
 class BitmapExport : public QDialog
 {
 	Q_OBJECT
-	
+
+	friend class Settings;
 public:
 	explicit BitmapExport(QWidget *inParent, const SLFormat::Board* inBoard);
 	~BitmapExport();
@@ -52,12 +53,17 @@ private slots:
 	void	rejected();
 
 private:
+	void	setResolution(int inUnits, int inRes);
+	void	getResolution(int& outUnits, int& outRes);
+
 	Ui::BitmapExport *ui;
 
 	QCheckBox*	mLayerCheckBoxes[SLFormat::Board::cNumberLayers];
 
 	const SLFormat::Board*	mBoard;
 	BoardScene*	mScene;
+
+	QString		mDir;
 };
 
 #endif // BITMAPEXPORT_H

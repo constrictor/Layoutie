@@ -19,11 +19,11 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "ProjectView.h"
+#include "Settings.h"
+#include "BitmapExport.h"
 
 #include <QDir>
 #include <QFileDialog>
-#include <QSettings>
-#include "BitmapExport.h"
 
 MainWindow::MainWindow(QWidget *inParent)
 	: QMainWindow(inParent),
@@ -38,11 +38,8 @@ MainWindow::MainWindow(QWidget *inParent)
 	connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(tabChanged()));
 	connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
 	connect(ui->action_bitmapExport, SIGNAL(triggered(bool)), SLOT(exportAsBitmap()));
-	mDir = QDir::homePath(); //TODO: Save current dir
 
-	QSettings settings;
-	restoreGeometry(settings.value("geometry").toByteArray());
-	restoreState(settings.value("windowState").toByteArray());
+	gSettings().restoreSettings(this);
 
 	newFile();
 }
@@ -80,6 +77,7 @@ void MainWindow::open()
 	{
 		return;
 	}
+	mDir = QFileInfo(fileName).dir().path();
 
 	{
 		auto proj = currentProject();
@@ -97,7 +95,10 @@ void MainWindow::save()
 	auto proj = currentProject();
 	if (proj)
 	{
-		proj->save();
+		if (proj->save())
+		{
+			mDir = QFileInfo(proj->fileName()).dir().path();
+		}
 	}
 }
 
@@ -106,7 +107,10 @@ void MainWindow::saveAs()
 	auto proj = currentProject();
 	if (proj)
 	{
-		proj->saveAs();
+		if (proj->saveAs())
+		{
+			mDir = QFileInfo(proj->fileName()).dir().path();
+		}
 	}
 }
 
@@ -126,9 +130,7 @@ void MainWindow::closeEvent(QCloseEvent* inOutEvent)
 		if (!doCloseTab(0, true))
 			return;
 	}
-	QSettings settings;
-	settings.setValue("geometry", saveGeometry());
-	settings.setValue("windowState", saveState());
+	gSettings().saveSettings(this);
 	QWidget::closeEvent(inOutEvent);
 }
 
