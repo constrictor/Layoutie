@@ -45,6 +45,12 @@ void TextItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 
 	for (auto track : mComponent->tracks())
 	{
+		QPainterPath path;
+		path.setFillRule(Qt::WindingFill);
+
+		QPainterPath path2;
+		path2.setFillRule(Qt::WindingFill);
+
 		float width = track.width();
 		if (!inIsMainNotGround && !mComponent->isCutoutArea())
 		{
@@ -68,17 +74,13 @@ void TextItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 					off.setX(off.x() * koef);
 					off.setY(off.y() * koef);
 				}
-				auto trackItem = new QGraphicsPolygonItem;
 				QPolygonF poly;
 				poly << pointF - off;
 				poly << pointF + off;
 				poly << prev + off;
 				poly << prev - off;
 				poly << poly.first();
-				trackItem->setPolygon(poly);
-				trackItem->setBrush(br);
-				trackItem->setPen(p);
-				inOutItem->addToGroup(trackItem);
+				path.addPolygon(poly);
 			}
 			hasPrev = true;
 			prev = pointF;
@@ -88,10 +90,17 @@ void TextItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 				pointF.y() - radius,
 				width,
 				width);
-			auto circle = new QGraphicsEllipseItem(rect);
-			circle->setBrush(br);
-			circle->setPen(p);
-			inOutItem->addToGroup(circle);
+			path2.addEllipse(rect);
 		}
+
+		auto pathItem = new QGraphicsPathItem(path);
+		pathItem->setBrush(br);
+		pathItem->setPen(p);
+		inOutItem->addToGroup(pathItem);
+
+		auto pathItem2 = new QGraphicsPathItem(path2);
+		pathItem2->setBrush(br);
+		pathItem2->setPen(p);
+		inOutItem->addToGroup(pathItem2);
 	}
 }

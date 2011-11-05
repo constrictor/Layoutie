@@ -73,4 +73,4 @@ add_executable(layoutie
 
 target_link_libraries(layoutie ${SPRINT_LIBRARIES} ${QT_LIBRARIES})
 
-set_target_properties(layoutie PROPERTIES COMPILE_FLAGS "-g -Wall -Wextra -Werror -pedantic-errors -Wformat=2 -Winit-self -Wstrict-overflow=5 -Wcast-qual -Wcast-align -Wwrite-strings -Wstrict-null-sentinel  -Woverloaded-virtual -Wsign-promo -std=c++0x -fno-strict-overflow -fstrict-aliasing -Wctor-dtor-privacy -Wnon-virtual-dtor -Wmissing-include-dirs -Wswitch-enum -Wundef -Wshadow -Wlogical-op -Wmissing-declarations -Winline -Wvla")
+set_target_properties(layoutie PROPERTIES COMPILE_FLAGS "-g -Wall -Wextra -Werror -pedantic-errors -Wformat=2 -Winit-self -Wstrict-overflow=5 -Wcast-qual -Wcast-align -Wwrite-strings -Wstrict-null-sentinel  -Woverloaded-virtual -Wsign-promo -std=c++0x -fno-strict-overflow -fstrict-aliasing -Wctor-dtor-privacy -Wnon-virtual-dtor -Wmissing-include-dirs -Wswitch-enum -Wundef -Wshadow -Wlogical-op -Wmissing-declarations -Wvla")
