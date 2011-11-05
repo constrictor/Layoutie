@@ -21,6 +21,7 @@
 #include "BoardScene.h"
 
 #include <QWheelEvent>
+#include <QGLWidget>
 
 #include <SLBoard.h>
 
@@ -29,6 +30,15 @@
 BoardView::BoardView(QWidget* inParent, SLFormat::Board* inBoard)
 	: QGraphicsView(inParent), mBoard(inBoard)
 {
+	if (QGLFormat::hasOpenGL())
+	{
+		setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::Rgba | QGL::AlphaChannel)));
+		setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+		setRenderHint(QPainter::HighQualityAntialiasing);
+
+		this->setFrameStyle(QFrame::NoFrame); // semitransparent frame causes artifacts when using OpenGL
+	}
+
 	mScene = new BoardScene(inBoard, this);
 	this->setScene(mScene);
 
@@ -59,7 +69,8 @@ void BoardView::wheelEvent(QWheelEvent* inEvent)
 void BoardView::updateZoom()
 {
 	double zoom = mBoard->zoomLevel();
-	this->resetTransform();
-	scale(zoom, zoom);
+	QTransform m;
+	m.scale(zoom, zoom);
+	this->setTransform(m, false);
 	mScene->zoomed();
 }

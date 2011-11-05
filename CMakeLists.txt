@@ -4,7 +4,7 @@ project(layoutie)
 find_package(Sprint REQUIRED)
 
 set (QT_MIN_VERSION "4.7.0")
-find_package(Qt4 REQUIRED QtCore QtGui)
+find_package(Qt4 REQUIRED QtCore QtGui QtOpenGL)
 include(${QT_USE_FILE})
 
 set(LAYOUTIE_SOURCES

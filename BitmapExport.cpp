@@ -23,6 +23,7 @@
 #include "Settings.h"
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QGLWidget>
 
 static const float cCentimetersPerInch = 2.54; // cm per inch
 
@@ -31,11 +32,19 @@ BitmapExport::BitmapExport(QWidget* inParent, const SLFormat::Board* inBoard)
 {
 	ui->setupUi(this);
 
+	if (QGLFormat::hasOpenGL())
+	{
+		ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::Rgba | QGL::AlphaChannel)));
+		ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+		ui->graphicsView->setRenderHint(QPainter::HighQualityAntialiasing);
+
+		ui->graphicsView->setFrameStyle(QFrame::NoFrame); // semitransparent frame causes artifacts when using OpenGL
+	}
+
+	ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+
 	mScene = new BoardScene(const_cast<SLFormat::Board*>(mBoard), ui->graphicsView);
 	ui->graphicsView->setScene(mScene);
-	
-	ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-	ui->graphicsView->setRenderHint(QPainter::Antialiasing);
 
 	mLayerCheckBoxes[0] = ui->layer0CheckBox;
 	mLayerCheckBoxes[1] = ui->layer1CheckBox;
