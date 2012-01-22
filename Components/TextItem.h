@@ -25,19 +25,19 @@ class QGraphicsPolygonItem;
 
 namespace SLFormat
 {
-	class TextComponent;
+    class TextComponent;
 }
 
 class TextItem : public ComponentItem
 {
 public:
-	TextItem(SLFormat::TextComponent* inComponent);
+    TextItem(SLFormat::TextComponent* inComponent);
 
 protected:
-	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 
 private:
-	SLFormat::TextComponent* mComponent;
+    SLFormat::TextComponent* mComponent;
 };
 
 #endif //TEXT_ITEM_H

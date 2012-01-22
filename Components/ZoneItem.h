@@ -26,7 +26,7 @@
 
 namespace SLFormat
 {
-	class ZoneComponent;
+    class ZoneComponent;
 }
 
 class QPolygonF;
@@ -34,17 +34,17 @@ class QPolygonF;
 class ZoneItem : public ComponentItem
 {
 public:
-	ZoneItem(SLFormat::ZoneComponent* inComponent);
+    ZoneItem(SLFormat::ZoneComponent* inComponent);
 
 protected:
-	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 
 private:
-	void	addLine(QPolygonF& outPolygon, QPainterPath& outPath, QPointF inPoint1, QPointF inPoint2, qreal inRadius);
+    void    addLine(QPolygonF& outPolygon, QPainterPath& outPath, QPointF inPoint1, QPointF inPoint2, qreal inRadius);
 
-	QBitmap createHatchedBrushTexture(float inHatchedWidth);
+    QBitmap createHatchedBrushTexture(float inHatchedWidth);
 
-	SLFormat::ZoneComponent* mComponent;
+    SLFormat::ZoneComponent* mComponent;
 };
 
 #endif //ZONE_ITEM_H

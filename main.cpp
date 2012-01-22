@@ -23,15 +23,15 @@
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
-	a.setApplicationName(QApplication::tr("Layoutie"));
-	a.setOrganizationName(QApplication::tr("Layoutie"));
+    QApplication a(argc, argv);
+    a.setApplicationName(QApplication::tr("Layoutie"));
+    a.setOrganizationName(QApplication::tr("Layoutie"));
 
-	SLFormat::Exceptions::GenerateExceptions();
-	SLFormat::Exceptions::GenerateDevExceptions();
+    SLFormat::Exceptions::GenerateExceptions();
+    SLFormat::Exceptions::GenerateDevExceptions();
 
-	MainWindow w;
-	w.show();
+    MainWindow w;
+    w.show();
 
-	return a.exec();
+    return a.exec();
 }

@@ -21,14 +21,14 @@
 
 namespace SLFormat
 {
-	class Component;
+    class Component;
 }
 
 class ComponentItem;
 
 namespace ComponentFactory
 {
-	ComponentItem* createItem(SLFormat::Component* inComponent);
+    ComponentItem* createItem(SLFormat::Component* inComponent);
 }
 
 #endif //COMPONENT_FACTORY_H

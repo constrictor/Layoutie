@@ -29,48 +29,48 @@
 #include <cmath>
 
 CircleItem::CircleItem(SLFormat::CircleComponent* inComponent)
-	:mComponent(inComponent)
+    :mComponent(inComponent)
 {
 }
 
 void CircleItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 {
-	if (inIsMainNotGround && mComponent->isCutoutArea())
-		return;
-	const QColor color = inIsMainNotGround ?
-		gSettings().layerColor(mComponent->layer())
-		: gSettings().backgroundColor();
+    if (inIsMainNotGround && mComponent->isCutoutArea())
+        return;
+    const QColor color = inIsMainNotGround ?
+        gSettings().layerColor(mComponent->layer())
+        : gSettings().backgroundColor();
 
-	float width = mComponent->width();
-	if (!inIsMainNotGround && !mComponent->isCutoutArea())
-	{
-		width += mComponent->groundPlaneDistance() * 2;
-	}
-	QPen p(color, width);
-	p.setCapStyle(Qt::RoundCap);
-	p.setJoinStyle(Qt::RoundJoin);
+    float width = mComponent->width();
+    if (!inIsMainNotGround && !mComponent->isCutoutArea())
+    {
+        width += mComponent->groundPlaneDistance() * 2;
+    }
+    QPen p(color, width);
+    p.setCapStyle(Qt::RoundCap);
+    p.setJoinStyle(Qt::RoundJoin);
 
-	const float radius = mComponent->diameter() / 2;
+    const float radius = mComponent->diameter() / 2;
 
-	QRectF rect(mComponent->center().x - radius, -mComponent->center().y - radius,
-		mComponent->diameter(), mComponent->diameter());
-	
-	QPainterPath path;
-	path.arcMoveTo(rect, mComponent->angle());
-	unsigned span = mComponent->spanAngle();
-	if (span == 0)
-		span = 360;
-	path.arcTo(rect, mComponent->angle(), span);
-	if (mComponent->isFilled())
-	{
-		path.closeSubpath();
-	}
-	auto item = new QGraphicsPathItem(path);
-	item->setPen(p);
-	if (mComponent->isFilled())
-	{
-		const QBrush br(color);
-		item->setBrush(br);
-	}
-	inOutItem->addToGroup(item);
+    QRectF rect(mComponent->center().x - radius, -mComponent->center().y - radius,
+        mComponent->diameter(), mComponent->diameter());
+
+    QPainterPath path;
+    path.arcMoveTo(rect, mComponent->angle());
+    unsigned span = mComponent->spanAngle();
+    if (span == 0)
+        span = 360;
+    path.arcTo(rect, mComponent->angle(), span);
+    if (mComponent->isFilled())
+    {
+        path.closeSubpath();
+    }
+    auto item = new QGraphicsPathItem(path);
+    item->setPen(p);
+    if (mComponent->isFilled())
+    {
+        const QBrush br(color);
+        item->setBrush(br);
+    }
+    inOutItem->addToGroup(item);
 }

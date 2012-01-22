@@ -30,119 +30,119 @@
 #include <cmath>
 
 ZoneItem::ZoneItem(SLFormat::ZoneComponent* inComponent)
-	:mComponent(inComponent)
+    :mComponent(inComponent)
 {
 }
 
 void ZoneItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 {
-	if (inIsMainNotGround && mComponent->isCutoutArea())
-		return;
-	const QColor color = inIsMainNotGround ?
-		gSettings().layerColor(mComponent->layer())
-		: gSettings().backgroundColor();
-	QBrush solidBrush(color);
-	QBrush br(solidBrush);
-	if (mComponent->isHatched())
-	{
-		br.setTexture(createHatchedBrushTexture(mComponent->hatchedWidth()));
-		br.setColor(color);
-	}
-	const QPen p(color);
+    if (inIsMainNotGround && mComponent->isCutoutArea())
+        return;
+    const QColor color = inIsMainNotGround ?
+        gSettings().layerColor(mComponent->layer())
+        : gSettings().backgroundColor();
+    QBrush solidBrush(color);
+    QBrush br(solidBrush);
+    if (mComponent->isHatched())
+    {
+        br.setTexture(createHatchedBrushTexture(mComponent->hatchedWidth()));
+        br.setColor(color);
+    }
+    const QPen p(color);
 
-	float width = mComponent->width();
-	if (!inIsMainNotGround && !mComponent->isCutoutArea())
-	{
-		width += mComponent->groundPlaneDistance() * 2;
-	}
-	const float radius = width / 2;
+    float width = mComponent->width();
+    if (!inIsMainNotGround && !mComponent->isCutoutArea())
+    {
+        width += mComponent->groundPlaneDistance() * 2;
+    }
+    const float radius = width / 2;
 
-	QPointF prev;
-	bool hasPrev = false;
+    QPointF prev;
+    bool hasPrev = false;
 
-	QPolygonF poly;
-	QPainterPath path;
-	for (auto point : mComponent->points())
-	{
-		QPointF pointF(point.x, - point.y);
-		if (hasPrev)
-		{
-			addLine(poly, path, prev, pointF, radius);
-		}
-		hasPrev = true;
-		prev = pointF;
-	}
-	{
-		auto point = mComponent->points()[0];
-		QPointF pointF(point.x, - point.y);
-		addLine(poly, path, prev, pointF, radius);
-	}
-	poly << poly.first();
+    QPolygonF poly;
+    QPainterPath path;
+    for (auto point : mComponent->points())
+    {
+        QPointF pointF(point.x, - point.y);
+        if (hasPrev)
+        {
+            addLine(poly, path, prev, pointF, radius);
+        }
+        hasPrev = true;
+        prev = pointF;
+    }
+    {
+        auto point = mComponent->points()[0];
+        QPointF pointF(point.x, - point.y);
+        addLine(poly, path, prev, pointF, radius);
+    }
+    poly << poly.first();
 
-	{
-		auto track = new QGraphicsPolygonItem;
-		track->setPolygon(poly);
-		track->setFillRule(Qt::WindingFill);
-		track->setBrush(br);
-		track->setPen(p);
-		inOutItem->addToGroup(track);
-	}
-	{
-		path.setFillRule(Qt::WindingFill);
-		auto pathItem = new QGraphicsPathItem(path);
-		pathItem->setPen(p);
-		pathItem->setBrush(solidBrush);
-		inOutItem->addToGroup(pathItem);
-	}
+    {
+        auto track = new QGraphicsPolygonItem;
+        track->setPolygon(poly);
+        track->setFillRule(Qt::WindingFill);
+        track->setBrush(br);
+        track->setPen(p);
+        inOutItem->addToGroup(track);
+    }
+    {
+        path.setFillRule(Qt::WindingFill);
+        auto pathItem = new QGraphicsPathItem(path);
+        pathItem->setPen(p);
+        pathItem->setBrush(solidBrush);
+        inOutItem->addToGroup(pathItem);
+    }
 
-	for (auto point : mComponent->points())
-	{
-		QPointF pointF(point.x, - point.y);
-		QRectF rect(
-			pointF.x() - radius,
-					pointF.y() - radius,
-					width,
-			  width);
-		auto circle = new QGraphicsEllipseItem(rect);
-		circle->setBrush(solidBrush);
-		circle->setPen(p);
-		inOutItem->addToGroup(circle);
-	}
+    for (auto point : mComponent->points())
+    {
+        QPointF pointF(point.x, - point.y);
+        QRectF rect(
+            pointF.x() - radius,
+                    pointF.y() - radius,
+                    width,
+              width);
+        auto circle = new QGraphicsEllipseItem(rect);
+        circle->setBrush(solidBrush);
+        circle->setPen(p);
+        inOutItem->addToGroup(circle);
+    }
 }
 
 void ZoneItem::addLine(QPolygonF& outPolygon, QPainterPath& outPath, QPointF inPoint1, QPointF inPoint2, qreal inRadius)
 {
-	QPointF off;
-	off = inPoint1 - inPoint2;
-	if (off.manhattanLength() == 0)
-		return;
-	{
-		auto tmp = -off.x();
-		off.setX(off.y());
-		off.setY(tmp);
-		qreal koef = inRadius / std::sqrt(off.x() * off.x() + off.y() * off.y());
-		off.setX(off.x() * koef);
-		off.setY(off.y() * koef);
-	}
-	outPolygon << inPoint1 - off;
-	outPolygon << inPoint2 - off;
-	QPainterPath path;
-	path.moveTo(inPoint1 - off);
-	path.lineTo(inPoint1 + off);
-	path.lineTo(inPoint2 + off);
-	path.lineTo(inPoint2 - off);
-	path.closeSubpath();
-	outPath.addPath(path);
+    QPointF off;
+    off = inPoint1 - inPoint2;
+    if (off.manhattanLength() == 0)
+        return;
+    {
+        auto tmp = -off.x();
+        off.setX(off.y());
+        off.setY(tmp);
+        qreal koef = inRadius / std::sqrt(off.x() * off.x() + off.y() * off.y());
+        off.setX(off.x() * koef);
+        off.setY(off.y() * koef);
+    }
+    outPolygon << inPoint1 - off;
+    outPolygon << inPoint2 - off;
+    QPainterPath path;
+    path.moveTo(inPoint1 - off);
+    path.lineTo(inPoint1 + off);
+    path.lineTo(inPoint2 + off);
+    path.lineTo(inPoint2 - off);
+    path.closeSubpath();
+    outPath.addPath(path);
 }
 
 QBitmap ZoneItem::createHatchedBrushTexture(float inHatchedWidth)
 {
-	QImage image(inHatchedWidth, inHatchedWidth, QImage::Format_Mono);
-	image.fill(1);
-	QPainter p(&image);
-	p.setPen(QPen(Qt::black));
-	p.fillRect(0, 0, inHatchedWidth, inHatchedWidth / 2, Qt::SolidPattern);
-	p.fillRect(0, inHatchedWidth / 2, inHatchedWidth / 2, inHatchedWidth / 2, Qt::SolidPattern);
-	QBitmap res = QBitmap::fromImage(image, Qt::AutoColor);
-	return res;
+    QImage image(inHatchedWidth, inHatchedWidth, QImage::Format_Mono);
+    image.fill(1);
+    QPainter p(&image);
+    p.setPen(QPen(Qt::black));
+    p.fillRect(0, 0, inHatchedWidth, inHatchedWidth / 2, Qt::SolidPattern);
+    p.fillRect(0, inHatchedWidth / 2, inHatchedWidth / 2, inHatchedWidth / 2, Qt::SolidPattern);
+    QBitmap res = QBitmap::fromImage(image, Qt::AutoColor);
+    return res;
 }

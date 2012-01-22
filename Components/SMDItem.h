@@ -23,19 +23,19 @@
 
 namespace SLFormat
 {
-	class SMDComponent;
+    class SMDComponent;
 }
 
 class SMDItem : public ComponentItem
 {
 public:
-	SMDItem(SLFormat::SMDComponent* inComponent);
+    SMDItem(SLFormat::SMDComponent* inComponent);
 
 protected:
-	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 private:
 
-	SLFormat::SMDComponent* mComponent;
+    SLFormat::SMDComponent* mComponent;
 };
 
 #endif //SMD_ITEM_H

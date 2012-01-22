@@ -25,19 +25,19 @@ class QGraphicsPolygonItem;
 
 namespace SLFormat
 {
-	class TrackComponent;
+    class TrackComponent;
 }
 
 class TrackItem : public ComponentItem
 {
 public:
-	TrackItem(SLFormat::TrackComponent* inComponent);
+    TrackItem(SLFormat::TrackComponent* inComponent);
 
 protected:
-	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 
 private:
-	SLFormat::TrackComponent* mComponent;
+    SLFormat::TrackComponent* mComponent;
 };
 
 #endif //TRACK_ITEM_H

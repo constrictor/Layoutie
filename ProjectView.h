@@ -26,38 +26,38 @@ class QTabWidget;
 
 class ProjectView : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ProjectView(QWidget* inParent, const QString& inFileName);
-	~ProjectView();
+    ProjectView(QWidget* inParent, const QString& inFileName);
+    ~ProjectView();
 
-	bool	save();
-	bool	saveAs();
+    bool    save();
+    bool    saveAs();
 
-	bool	trySaveIfModified();
+    bool    trySaveIfModified();
 
-	bool	isModified() const { return mModified; }
+    bool    isModified() const { return mModified; }
 
-	bool	isUnused() const { return !isModified() && fileName().isEmpty(); }
-	const QString& fileName() const { return mFileName; }
-	QString	prettyFileName() const;
+    bool    isUnused() const { return !isModified() && fileName().isEmpty(); }
+    const QString& fileName() const { return mFileName; }
+    QString    prettyFileName() const;
 
-	const SLFormat::Board*	activeBoard() const;
+    const SLFormat::Board*    activeBoard() const;
 
-	static const QString cFileNameFilter;
+    static const QString cFileNameFilter;
 signals:
-	void	modifiedChanged(bool inValue);
+    void    modifiedChanged(bool inValue);
 
 private slots:
-	void	boardModified();
+    void    boardModified();
 private:
-	void	setModified(bool inModified);
+    void    setModified(bool inModified);
 
-	QTabWidget* 	mTabWidget;
+    QTabWidget*     mTabWidget;
 
-	SLFormat::Project mProject;
-	QString	mFileName;
-	bool	mModified;
+    SLFormat::Project mProject;
+    QString    mFileName;
+    bool    mModified;
 };
 
 #endif //PROJECT_VIEW_H

@@ -29,78 +29,78 @@
 #include <cmath>
 
 TextItem::TextItem(SLFormat::TextComponent* inComponent)
-	:mComponent(inComponent)
+    :mComponent(inComponent)
 {
 }
 
 void TextItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 {
-	if (inIsMainNotGround && mComponent->isCutoutArea())
-		return;
-	const QColor color = inIsMainNotGround ?
-		gSettings().layerColor(mComponent->layer())
-		: gSettings().backgroundColor();
-	const QBrush br(color);
-	const QPen p(color);
+    if (inIsMainNotGround && mComponent->isCutoutArea())
+        return;
+    const QColor color = inIsMainNotGround ?
+        gSettings().layerColor(mComponent->layer())
+        : gSettings().backgroundColor();
+    const QBrush br(color);
+    const QPen p(color);
 
-	for (auto track : mComponent->tracks())
-	{
-		QPainterPath path;
-		path.setFillRule(Qt::WindingFill);
+    for (auto track : mComponent->tracks())
+    {
+        QPainterPath path;
+        path.setFillRule(Qt::WindingFill);
 
-		QPainterPath path2;
-		path2.setFillRule(Qt::WindingFill);
+        QPainterPath path2;
+        path2.setFillRule(Qt::WindingFill);
 
-		float width = track.width();
-		if (!inIsMainNotGround && !mComponent->isCutoutArea())
-		{
-			width += mComponent->groundPlaneDistance() * 2;
-		}
-		const float radius = width / 2;
-		QPointF prev;
-		bool hasPrev = false;
-		for (auto point : track.points())
-		{
-			QPointF pointF(point.x, - point.y);
-			if (hasPrev)
-			{
-				QPointF off;
-				off = pointF - prev;
-				{
-					auto tmp = -off.x();
-					off.setX(off.y());
-					off.setY(tmp);
-					qreal koef = radius / sqrt(off.x() * off.x() + off.y() * off.y());
-					off.setX(off.x() * koef);
-					off.setY(off.y() * koef);
-				}
-				QPolygonF poly;
-				poly << pointF - off;
-				poly << pointF + off;
-				poly << prev + off;
-				poly << prev - off;
-				poly << poly.first();
-				path.addPolygon(poly);
-			}
-			hasPrev = true;
-			prev = pointF;
+        float width = track.width();
+        if (!inIsMainNotGround && !mComponent->isCutoutArea())
+        {
+            width += mComponent->groundPlaneDistance() * 2;
+        }
+        const float radius = width / 2;
+        QPointF prev;
+        bool hasPrev = false;
+        for (auto point : track.points())
+        {
+            QPointF pointF(point.x, - point.y);
+            if (hasPrev)
+            {
+                QPointF off;
+                off = pointF - prev;
+                {
+                    auto tmp = -off.x();
+                    off.setX(off.y());
+                    off.setY(tmp);
+                    qreal koef = radius / sqrt(off.x() * off.x() + off.y() * off.y());
+                    off.setX(off.x() * koef);
+                    off.setY(off.y() * koef);
+                }
+                QPolygonF poly;
+                poly << pointF - off;
+                poly << pointF + off;
+                poly << prev + off;
+                poly << prev - off;
+                poly << poly.first();
+                path.addPolygon(poly);
+            }
+            hasPrev = true;
+            prev = pointF;
 
-			QRectF rect(
-				pointF.x() - radius,
-				pointF.y() - radius,
-				width,
-				width);
-			path2.addEllipse(rect);
-		}
+            QRectF rect(
+                pointF.x() - radius,
+                pointF.y() - radius,
+                width,
+                width);
+            path2.addEllipse(rect);
+        }
 
-		auto pathItem = new QGraphicsPathItem(path);
-		pathItem->setBrush(br);
-		pathItem->setPen(p);
-		inOutItem->addToGroup(pathItem);
+        auto pathItem = new QGraphicsPathItem(path);
+        pathItem->setBrush(br);
+        pathItem->setPen(p);
+        inOutItem->addToGroup(pathItem);
 
-		auto pathItem2 = new QGraphicsPathItem(path2);
-		pathItem2->setBrush(br);
-		pathItem2->setPen(p);
-		inOutItem->addToGroup(pathItem2);
-	}
+        auto pathItem2 = new QGraphicsPathItem(path2);
+        pathItem2->setBrush(br);
+        pathItem2->setPen(p);
+        inOutItem->addToGroup(pathItem2);
+    }
 }

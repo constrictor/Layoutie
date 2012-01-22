@@ -28,23 +28,23 @@
 #include <cmath>
 
 BoardView::BoardView(QWidget* inParent, SLFormat::Board* inBoard)
-	: QGraphicsView(inParent), mBoard(inBoard)
+    : QGraphicsView(inParent), mBoard(inBoard)
 {
-	if (QGLFormat::hasOpenGL())
-	{
-		setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::Rgba | QGL::AlphaChannel)));
-		setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-		setRenderHint(QPainter::HighQualityAntialiasing);
+    if (QGLFormat::hasOpenGL())
+    {
+        setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::Rgba | QGL::AlphaChannel)));
+        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        setRenderHint(QPainter::HighQualityAntialiasing);
 
-		this->setFrameStyle(QFrame::NoFrame); // semitransparent frame causes artifacts when using OpenGL
-	}
+        this->setFrameStyle(QFrame::NoFrame); // semitransparent frame causes artifacts when using OpenGL
+    }
 
-	mScene = new BoardScene(inBoard, this);
-	this->setScene(mScene);
+    mScene = new BoardScene(inBoard, this);
+    this->setScene(mScene);
 
-	setTransformationAnchor(AnchorUnderMouse);
-	setRenderHint(QPainter::Antialiasing);
-	updateZoom();
+    setTransformationAnchor(AnchorUnderMouse);
+    setRenderHint(QPainter::Antialiasing);
+    updateZoom();
 }
 
 BoardView::~BoardView()
@@ -54,23 +54,23 @@ BoardView::~BoardView()
 
 void BoardView::wheelEvent(QWheelEvent* inEvent)
 {
-	int turns = inEvent->delta() / 8 / 15;
-	double change = std::pow(1.4, turns);
-	double newZoomLevel = mBoard->zoomLevel() * change;
-	double min = 200.0 / qMax(mScene->height(), mScene->width());
-	if (newZoomLevel < min)
-		newZoomLevel = min;
-	if (newZoomLevel > 1)
-		newZoomLevel = 1;
-	mBoard->setZoomLevel(newZoomLevel);
-	updateZoom();
+    int turns = inEvent->delta() / 8 / 15;
+    double change = std::pow(1.4, turns);
+    double newZoomLevel = mBoard->zoomLevel() * change;
+    double min = 200.0 / qMax(mScene->height(), mScene->width());
+    if (newZoomLevel < min)
+        newZoomLevel = min;
+    if (newZoomLevel > 1)
+        newZoomLevel = 1;
+    mBoard->setZoomLevel(newZoomLevel);
+    updateZoom();
 }
 
 void BoardView::updateZoom()
 {
-	double zoom = mBoard->zoomLevel();
-	QTransform m;
-	m.scale(zoom, zoom);
-	this->setTransform(m, false);
-	mScene->zoomed();
+    double zoom = mBoard->zoomLevel();
+    QTransform m;
+    m.scale(zoom, zoom);
+    this->setTransform(m, false);
+    mScene->zoomed();
 }

@@ -23,32 +23,32 @@
 
 namespace SLFormat
 {
-	class Board;
+    class Board;
 }
 
 class BoardScene;
 
 class BoardView : public QGraphicsView
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	BoardView(QWidget* inParent, SLFormat::Board* inBoard);
-	~BoardView();
+    BoardView(QWidget* inParent, SLFormat::Board* inBoard);
+    ~BoardView();
 
-	SLFormat::Board* board() { return mBoard; }
-	const SLFormat::Board* board() const  { return mBoard; }
+    SLFormat::Board* board() { return mBoard; }
+    const SLFormat::Board* board() const  { return mBoard; }
 
 signals:
-	void	modified();
+    void    modified();
 
 protected:
-	virtual void wheelEvent(QWheelEvent* inEvent);
+    virtual void wheelEvent(QWheelEvent* inEvent);
 
 private:
-	void	updateZoom();
+    void    updateZoom();
 
-	SLFormat::Board* mBoard;
-	BoardScene*	mScene;
+    SLFormat::Board* mBoard;
+    BoardScene*    mScene;
 };
 
 #endif //BOARD_VIEW_H

@@ -29,29 +29,29 @@ class BoardGrid;
 
 class BoardScene : public QGraphicsScene
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	BoardScene(const SLFormat::Board* inBoard, QWidget* inParent);
-	~BoardScene();
+    BoardScene(const SLFormat::Board* inBoard, QWidget* inParent);
+    ~BoardScene();
 
-	void zoomed();
+    void zoomed();
 
-	virtual void	showGrid(bool inShow = true);
-	bool	isGridShown() const;
+    virtual void    showGrid(bool inShow = true);
+    bool    isGridShown() const;
 
-	virtual void	showLayer(unsigned inLayerNumber, bool inShow = true);
-	bool	isLayerShown(unsigned inLayerNumber) const;
+    virtual void    showLayer(unsigned inLayerNumber, bool inShow = true);
+    bool    isLayerShown(unsigned inLayerNumber) const;
 
-	virtual void	showDrillHoles(bool inShow = true);
-	bool	isDrillHolesShown() const;
+    virtual void    showDrillHoles(bool inShow = true);
+    bool    isDrillHolesShown() const;
 private:
 
-	const SLFormat::Board* mBoard;
-	QGraphicsItemGroup* mLayerGroups[SLFormat::Board::cNumberLayers];
-	QGraphicsItemGroup* mGroundPlanes[SLFormat::Board::cNumberLayers];
-	QGraphicsItemGroup* mDrillHoles;
-	QGraphicsRectItem* mBackground;
-	BoardGrid* mGrid;
+    const SLFormat::Board* mBoard;
+    QGraphicsItemGroup* mLayerGroups[SLFormat::Board::cNumberLayers];
+    QGraphicsItemGroup* mGroundPlanes[SLFormat::Board::cNumberLayers];
+    QGraphicsItemGroup* mDrillHoles;
+    QGraphicsRectItem* mBackground;
+    BoardGrid* mGrid;
 };
 
 #endif //BOARD_SCENE_H

@@ -24,24 +24,24 @@ class QGraphicsItemGroup;
 class ComponentItem
 {
 public:
-	ComponentItem();
+    ComponentItem();
 
-	virtual ~ComponentItem();
+    virtual ~ComponentItem();
 
-	void update();
+    void update();
 
-	QGraphicsItemGroup*	mainItem();
-	QGraphicsItemGroup*	groundPlaneItem();
-	QGraphicsItemGroup*	drillItem();
+    QGraphicsItemGroup*    mainItem();
+    QGraphicsItemGroup*    groundPlaneItem();
+    QGraphicsItemGroup*    drillItem();
 protected:
-	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround) = 0;
-	virtual void createDrillItem(QGraphicsItemGroup* inOutItem); // default implementation is empty.
+    virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround) = 0;
+    virtual void createDrillItem(QGraphicsItemGroup* inOutItem); // default implementation is empty.
 private:
-	void cleanSubItems(QGraphicsItemGroup* inOutItem);
+    void cleanSubItems(QGraphicsItemGroup* inOutItem);
 
-	QGraphicsItemGroup* mMainItem;
-	QGraphicsItemGroup* mGroundPlaneItem;
-	QGraphicsItemGroup* mDrillItem;
+    QGraphicsItemGroup* mMainItem;
+    QGraphicsItemGroup* mGroundPlaneItem;
+    QGraphicsItemGroup* mDrillItem;
 };
 
 #endif //COMPONENT_ITEM_H

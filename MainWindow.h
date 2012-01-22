@@ -22,40 +22,40 @@
 #include <QMainWindow>
 
 namespace Ui {
-	class MainWindow;
+    class MainWindow;
 }
 
 class ProjectView;
 
 class MainWindow : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	friend class Settings;
+    friend class Settings;
 public:
-	explicit MainWindow(QWidget *parent = 0);
-	~MainWindow();
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
 private slots:
-	void	newFile();
-	void	open();
-	void	save();
-	void	saveAs();
-	void	closeCurrent();
-	void	exportAsBitmap();
-	void	tabChanged();
-	bool	closeTab(int inIndex);
-	void	tabModified(bool inValue);
+    void    newFile();
+    void    open();
+    void    save();
+    void    saveAs();
+    void    closeCurrent();
+    void    exportAsBitmap();
+    void    tabChanged();
+    bool    closeTab(int inIndex);
+    void    tabModified(bool inValue);
 protected:
     virtual void closeEvent(QCloseEvent* inOutEvent);
 private:
-	Ui::MainWindow *ui;
+    Ui::MainWindow *ui;
 
-	bool	doCloseTab(int inIndex, bool inCloseLast);
-	ProjectView* project(int inIndex);
-	ProjectView* currentProject();
-	void	newTab(const QString& inFileName);
+    bool    doCloseTab(int inIndex, bool inCloseLast);
+    ProjectView* project(int inIndex);
+    ProjectView* currentProject();
+    void    newTab(const QString& inFileName);
 
-	QString mDir;
+    QString mDir;
 };
 
 #endif // MAINWINDOW_H

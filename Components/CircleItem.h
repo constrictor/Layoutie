@@ -25,19 +25,19 @@ class QGraphicsPolygonItem;
 
 namespace SLFormat
 {
-	class CircleComponent;
+    class CircleComponent;
 }
 
 class CircleItem : public ComponentItem
 {
 public:
-	CircleItem(SLFormat::CircleComponent* inComponent);
+    CircleItem(SLFormat::CircleComponent* inComponent);
 
 protected:
-	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 
 private:
-	SLFormat::CircleComponent* mComponent;
+    SLFormat::CircleComponent* mComponent;
 };
 
 #endif //CIRCLE_ITEM_H

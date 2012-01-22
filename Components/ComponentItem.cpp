@@ -21,9 +21,9 @@
 #include <Settings.h>
 
 ComponentItem::ComponentItem()
-	:mMainItem(new QGraphicsItemGroup),
-	mGroundPlaneItem(nullptr),
-	mDrillItem(new QGraphicsItemGroup)
+    :mMainItem(new QGraphicsItemGroup),
+    mGroundPlaneItem(nullptr),
+    mDrillItem(new QGraphicsItemGroup)
 {
 }
 
@@ -33,48 +33,48 @@ ComponentItem::~ComponentItem()
 
 void ComponentItem::update()
 {
-	cleanSubItems(mMainItem);
-	createItem(mMainItem, true);
-	if (mGroundPlaneItem)
-	{
-		cleanSubItems(mGroundPlaneItem);
-		createItem(mGroundPlaneItem, false);
-	}
-	cleanSubItems(mDrillItem);
-	createDrillItem(mDrillItem);
+    cleanSubItems(mMainItem);
+    createItem(mMainItem, true);
+    if (mGroundPlaneItem)
+    {
+        cleanSubItems(mGroundPlaneItem);
+        createItem(mGroundPlaneItem, false);
+    }
+    cleanSubItems(mDrillItem);
+    createDrillItem(mDrillItem);
 }
 
 QGraphicsItemGroup* ComponentItem::mainItem()
 {
-	return mMainItem;
+    return mMainItem;
 }
 
 QGraphicsItemGroup* ComponentItem::groundPlaneItem()
 {
-	if (!mGroundPlaneItem)
-	{
-		mGroundPlaneItem = new QGraphicsItemGroup;
-		createItem(mGroundPlaneItem, false);
-	}
-	return mGroundPlaneItem;
+    if (!mGroundPlaneItem)
+    {
+        mGroundPlaneItem = new QGraphicsItemGroup;
+        createItem(mGroundPlaneItem, false);
+    }
+    return mGroundPlaneItem;
 }
 
 QGraphicsItemGroup* ComponentItem::drillItem()
 {
-	return mDrillItem;
+    return mDrillItem;
 }
 
 void ComponentItem::cleanSubItems(QGraphicsItemGroup* inOutItem)
 {
-	for (auto item : inOutItem->childItems())
-	{
-		inOutItem->removeFromGroup(item);
-		delete item;
-	}
+    for (auto item : inOutItem->childItems())
+    {
+        inOutItem->removeFromGroup(item);
+        delete item;
+    }
 }
 
 void ComponentItem::createDrillItem(QGraphicsItemGroup* inOutItem)
 {
-	(void)inOutItem;
-	//empty
+    (void)inOutItem;
+    //empty
 }

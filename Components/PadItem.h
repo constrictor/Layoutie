@@ -24,29 +24,29 @@
 
 namespace SLFormat
 {
-	class PadComponent;
+    class PadComponent;
 }
 
 class PadItem : public ComponentItem
 {
 public:
-	PadItem(SLFormat::PadComponent* inComponent);
+    PadItem(SLFormat::PadComponent* inComponent);
 
 protected:
-	virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    virtual void createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
     virtual void createDrillItem(QGraphicsItemGroup* inOutItem);
 private:
-	void createCircularItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
-	void createPolygonItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
-	void createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    void createCircularItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    void createPolygonItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
+    void createRoundedItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround);
 
-	void createCircularThermaItem(QGraphicsItemGroup* inOutItem);
-	void createPolygonThermaltem(QGraphicsItemGroup* inOutItem);
-	void createRoundedThermalItem(QGraphicsItemGroup* inOutItem);
+    void createCircularThermaItem(QGraphicsItemGroup* inOutItem);
+    void createPolygonThermaltem(QGraphicsItemGroup* inOutItem);
+    void createRoundedThermalItem(QGraphicsItemGroup* inOutItem);
 
-	QColor	color(bool inIsMainNotGround) const;
+    QColor    color(bool inIsMainNotGround) const;
 
-	SLFormat::PadComponent* mComponent;
+    SLFormat::PadComponent* mComponent;
 };
 
 #endif //PAD_ITEM_H

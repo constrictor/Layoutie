@@ -30,36 +30,36 @@ Settings& gSettings();
 class Settings
 {
 public:
-	QColor layerColor(int inLayer) const;
-	QString layerName(int inLayer) const;
-	QColor groundPlaneLayerColor(int inLayer) const;
-	QColor backgroundColor() const;
-	//QColor gridColor() const;
-	const QPen& gridMainPen() const;
-	const QPen& gridSubPen() const;
-	const QPen& gridOriginPen() const;
-	unsigned numGridSubdivisions() const;
+    QColor layerColor(int inLayer) const;
+    QString layerName(int inLayer) const;
+    QColor groundPlaneLayerColor(int inLayer) const;
+    QColor backgroundColor() const;
+    //QColor gridColor() const;
+    const QPen& gridMainPen() const;
+    const QPen& gridSubPen() const;
+    const QPen& gridOriginPen() const;
+    unsigned numGridSubdivisions() const;
 
-	unsigned layerFromOrderNumber(int inOrderNum) const;
+    unsigned layerFromOrderNumber(int inOrderNum) const;
 
-	friend Settings& gSettings();
-	QColor throughColor();
-	QColor fullDrillBorderColor();
-	QColor throughDrillBorderColor();
-	QColor throughDrillCrossColor();
+    friend Settings& gSettings();
+    QColor throughColor();
+    QColor fullDrillBorderColor();
+    QColor throughDrillBorderColor();
+    QColor throughDrillCrossColor();
 
-	template <typename T> void restoreSettings(T* inObject);
-	template <typename T> void saveSettings(T* inObject);
+    template <typename T> void restoreSettings(T* inObject);
+    template <typename T> void saveSettings(T* inObject);
 private:
-	Settings();
+    Settings();
 
-	static Settings* mInstance;
+    static Settings* mInstance;
 
-	QPen mGridMainPen;
-	QPen mGridSubPen;
-	QPen mGridOriginPen;
+    QPen mGridMainPen;
+    QPen mGridSubPen;
+    QPen mGridOriginPen;
 
-	QScopedPointer<QSettings> mSettings;
+    QScopedPointer<QSettings> mSettings;
 };
 
 #endif //SETTINGS_H

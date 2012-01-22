@@ -26,188 +26,188 @@
 #include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *inParent)
-	: QMainWindow(inParent),
-	ui(new Ui::MainWindow)
+    : QMainWindow(inParent),
+    ui(new Ui::MainWindow)
 {
-	ui->setupUi(this);
-	connect(ui->action_New, SIGNAL(triggered(bool)), SLOT(newFile()));
-	connect(ui->action_Open, SIGNAL(triggered(bool)), SLOT(open()));
-	connect(ui->action_Save, SIGNAL(triggered(bool)), SLOT(save()));
-	connect(ui->actionSave_As, SIGNAL(triggered(bool)), SLOT(saveAs()));
-	connect(ui->action_Close, SIGNAL(triggered(bool)), SLOT(closeCurrent()));
-	connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(tabChanged()));
-	connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
-	connect(ui->action_bitmapExport, SIGNAL(triggered(bool)), SLOT(exportAsBitmap()));
+    ui->setupUi(this);
+    connect(ui->action_New, SIGNAL(triggered(bool)), SLOT(newFile()));
+    connect(ui->action_Open, SIGNAL(triggered(bool)), SLOT(open()));
+    connect(ui->action_Save, SIGNAL(triggered(bool)), SLOT(save()));
+    connect(ui->actionSave_As, SIGNAL(triggered(bool)), SLOT(saveAs()));
+    connect(ui->action_Close, SIGNAL(triggered(bool)), SLOT(closeCurrent()));
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(tabChanged()));
+    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
+    connect(ui->action_bitmapExport, SIGNAL(triggered(bool)), SLOT(exportAsBitmap()));
 
-	gSettings().restoreSettings(this);
+    gSettings().restoreSettings(this);
 
-	newFile();
+    newFile();
 }
 
 MainWindow::~MainWindow()
 {
-	delete ui;
+    delete ui;
 }
 
 void MainWindow::newFile()
 {
-	newTab(QString());
+    newTab(QString());
 }
 
 void MainWindow::newTab(const QString& inFileName)
 {
-	ProjectView* view;
-	try
-	{
-		view = new ProjectView(ui->tabWidget, inFileName);
-	}
-	catch(...)
-	{
-		return;
-	}
-	int index = ui->tabWidget->addTab(view, view->prettyFileName());
-	ui->tabWidget->setCurrentIndex(index);
-	connect(view, SIGNAL(modifiedChanged(bool)), SLOT(tabModified(bool)));
+    ProjectView* view;
+    try
+    {
+        view = new ProjectView(ui->tabWidget, inFileName);
+    }
+    catch(...)
+    {
+        return;
+    }
+    int index = ui->tabWidget->addTab(view, view->prettyFileName());
+    ui->tabWidget->setCurrentIndex(index);
+    connect(view, SIGNAL(modifiedChanged(bool)), SLOT(tabModified(bool)));
 }
 
 void MainWindow::open()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), mDir, ProjectView::cFileNameFilter);
-	if (fileName.isEmpty())
-	{
-		return;
-	}
-	mDir = QFileInfo(fileName).dir().path();
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), mDir, ProjectView::cFileNameFilter);
+    if (fileName.isEmpty())
+    {
+        return;
+    }
+    mDir = QFileInfo(fileName).dir().path();
 
-	{
-		auto proj = currentProject();
-		if (proj && proj->isUnused())
-		{
-			doCloseTab(ui->tabWidget->currentIndex(), true);
-		}
-	}
+    {
+        auto proj = currentProject();
+        if (proj && proj->isUnused())
+        {
+            doCloseTab(ui->tabWidget->currentIndex(), true);
+        }
+    }
 
-	newTab(fileName);
+    newTab(fileName);
 }
 
 void MainWindow::save()
 {
-	auto proj = currentProject();
-	if (proj)
-	{
-		if (proj->save())
-		{
-			mDir = QFileInfo(proj->fileName()).dir().path();
-		}
-	}
+    auto proj = currentProject();
+    if (proj)
+    {
+        if (proj->save())
+        {
+            mDir = QFileInfo(proj->fileName()).dir().path();
+        }
+    }
 }
 
 void MainWindow::saveAs()
 {
-	auto proj = currentProject();
-	if (proj)
-	{
-		if (proj->saveAs())
-		{
-			mDir = QFileInfo(proj->fileName()).dir().path();
-		}
-	}
+    auto proj = currentProject();
+    if (proj)
+    {
+        if (proj->saveAs())
+        {
+            mDir = QFileInfo(proj->fileName()).dir().path();
+        }
+    }
 }
 
 void MainWindow::closeCurrent()
 {
-	int index = ui->tabWidget->currentIndex();
-	if (index != -1)
-	{
-		closeTab(index);
-	}
+    int index = ui->tabWidget->currentIndex();
+    if (index != -1)
+    {
+        closeTab(index);
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent* inOutEvent)
 {
-	while (ui->tabWidget->count())
-	{
-		if (!doCloseTab(0, true))
-			return;
-	}
-	gSettings().saveSettings(this);
-	QWidget::closeEvent(inOutEvent);
+    while (ui->tabWidget->count())
+    {
+        if (!doCloseTab(0, true))
+            return;
+    }
+    gSettings().saveSettings(this);
+    QWidget::closeEvent(inOutEvent);
 }
 
 void MainWindow::tabChanged()
 {
-	auto proj = currentProject();
-	QString title;
-	if (proj)
-	{
-		title = tr("%1 - %2") .arg(proj->prettyFileName()) .arg(QApplication::applicationName());
-	}
-	else
-	{
-		title = QApplication::applicationName();
-	}
-	this->setWindowTitle(title);
+    auto proj = currentProject();
+    QString title;
+    if (proj)
+    {
+        title = tr("%1 - %2") .arg(proj->prettyFileName()) .arg(QApplication::applicationName());
+    }
+    else
+    {
+        title = QApplication::applicationName();
+    }
+    this->setWindowTitle(title);
 }
 
 ProjectView* MainWindow::project(int inIndex)
 {
-	if (inIndex == -1)
-		return nullptr;
-	return static_cast<ProjectView*>(ui->tabWidget->widget(inIndex));
+    if (inIndex == -1)
+        return nullptr;
+    return static_cast<ProjectView*>(ui->tabWidget->widget(inIndex));
 }
 
 ProjectView* MainWindow::currentProject()
 {
-	return project(ui->tabWidget->currentIndex());
+    return project(ui->tabWidget->currentIndex());
 }
 
 bool MainWindow::closeTab(int inIndex)
 {
-	return doCloseTab(inIndex, false);
+    return doCloseTab(inIndex, false);
 }
 
 bool MainWindow::doCloseTab(int inIndex, bool inCloseLast)
 {
-	auto proj = static_cast<ProjectView*>(ui->tabWidget->widget(inIndex));
-	if (!proj->trySaveIfModified())
-		return false;
-	const bool closingLastTab = ui->tabWidget->count() == 1;
-	if (closingLastTab && !inCloseLast && proj->isUnused())
-		return false;
-	ui->tabWidget->removeTab(inIndex);
-	if (closingLastTab && !inCloseLast)
-	{
-		newFile();
-	}
-	return true;
+    auto proj = static_cast<ProjectView*>(ui->tabWidget->widget(inIndex));
+    if (!proj->trySaveIfModified())
+        return false;
+    const bool closingLastTab = ui->tabWidget->count() == 1;
+    if (closingLastTab && !inCloseLast && proj->isUnused())
+        return false;
+    ui->tabWidget->removeTab(inIndex);
+    if (closingLastTab && !inCloseLast)
+    {
+        newFile();
+    }
+    return true;
 }
 
 void MainWindow::tabModified(bool inValue)
 {
-	auto proj = qobject_cast<ProjectView*>(sender());
-	if (proj)
-		return;
-	int index = ui->tabWidget->indexOf(proj);
+    auto proj = qobject_cast<ProjectView*>(sender());
+    if (proj)
+        return;
+    int index = ui->tabWidget->indexOf(proj);
 
-	// TODO: Use icons for that
-	QString name = proj->prettyFileName();
-	if (inValue)
-	{
-		name = '*' + name;
-	}
-	ui->tabWidget->setTabText(index, name);
+    // TODO: Use icons for that
+    QString name = proj->prettyFileName();
+    if (inValue)
+    {
+        name = '*' + name;
+    }
+    ui->tabWidget->setTabText(index, name);
 }
 
 void MainWindow::exportAsBitmap()
 {
-	auto proj = currentProject();
-	if (!proj)
-		return;
+    auto proj = currentProject();
+    if (!proj)
+        return;
 
-	const SLFormat::Board* board = proj->activeBoard();
-	if (!board)
-		return;
+    const SLFormat::Board* board = proj->activeBoard();
+    if (!board)
+        return;
 
-	BitmapExport dlg(this, board);
-	dlg.exec();
+    BitmapExport dlg(this, board);
+    dlg.exec();
 }

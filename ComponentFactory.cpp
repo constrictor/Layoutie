@@ -36,29 +36,29 @@ using namespace SLFormat;
 
 ComponentItem* ComponentFactory::createItem(SLFormat::Component* inComponent)
 {
-	ComponentItem* res = nullptr;
-	switch (inComponent->type())
-	{
-		case ComponentTypes::SMD:
-			res = new SMDItem(static_cast<SMDComponent*>(inComponent));
-			break;
-		case ComponentTypes::Circle:
-			res = new CircleItem(static_cast<CircleComponent*>(inComponent));
-			break;
-		case ComponentTypes::Pad:
-			res = new PadItem(static_cast<PadComponent*>(inComponent));
-			break;
-		case ComponentTypes::Text:
-			res = new TextItem(static_cast<TextComponent*>(inComponent));
-			break;
-		case ComponentTypes::Track:
-			res = new TrackItem(static_cast<TrackComponent*>(inComponent));
-			break;
-		case ComponentTypes::Zone:
-			res = new ZoneItem(static_cast<ZoneComponent*>(inComponent));
-			break;
-	}
-	if (res)
-		res->update();
-	return res;
+    ComponentItem* res = nullptr;
+    switch (inComponent->type())
+    {
+        case ComponentTypes::SMD:
+            res = new SMDItem(static_cast<SMDComponent*>(inComponent));
+            break;
+        case ComponentTypes::Circle:
+            res = new CircleItem(static_cast<CircleComponent*>(inComponent));
+            break;
+        case ComponentTypes::Pad:
+            res = new PadItem(static_cast<PadComponent*>(inComponent));
+            break;
+        case ComponentTypes::Text:
+            res = new TextItem(static_cast<TextComponent*>(inComponent));
+            break;
+        case ComponentTypes::Track:
+            res = new TrackItem(static_cast<TrackComponent*>(inComponent));
+            break;
+        case ComponentTypes::Zone:
+            res = new ZoneItem(static_cast<ZoneComponent*>(inComponent));
+            break;
+    }
+    if (res)
+        res->update();
+    return res;
 }

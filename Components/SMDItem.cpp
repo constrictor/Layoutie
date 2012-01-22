@@ -27,33 +27,33 @@
 #include <QGraphicsPolygonItem>
 
 SMDItem::SMDItem(SLFormat::SMDComponent* inComponent)
-	:mComponent(inComponent)
+    :mComponent(inComponent)
 {
 }
 
 void SMDItem::createItem(QGraphicsItemGroup* inOutItem, bool inIsMainNotGround)
 {
-	auto main = new QGraphicsPolygonItem;
-	QPolygonF poly;
-	for (auto point : mComponent->rect().points)
-	{
-		poly << QPointF(point.x, - point.y);
-	}
-	poly << poly.first();
-	main->setPolygon(poly);
+    auto main = new QGraphicsPolygonItem;
+    QPolygonF poly;
+    for (auto point : mComponent->rect().points)
+    {
+        poly << QPointF(point.x, - point.y);
+    }
+    poly << poly.first();
+    main->setPolygon(poly);
 
-	QColor color = inIsMainNotGround ?
-		gSettings().layerColor(mComponent->layer())
-		: gSettings().backgroundColor();
-	QBrush br(color);
-	main->setBrush(br);
-	QPen p(color);
-	if (!inIsMainNotGround)
-	{
-		p.setColor(color);
-		p.setWidthF(mComponent->groundPlaneDistance() * 2);
-		p.setJoinStyle(Qt::MiterJoin);
-	}
-	main->setPen(p);
-	inOutItem->addToGroup(main);
+    QColor color = inIsMainNotGround ?
+        gSettings().layerColor(mComponent->layer())
+        : gSettings().backgroundColor();
+    QBrush br(color);
+    main->setBrush(br);
+    QPen p(color);
+    if (!inIsMainNotGround)
+    {
+        p.setColor(color);
+        p.setWidthF(mComponent->groundPlaneDistance() * 2);
+        p.setJoinStyle(Qt::MiterJoin);
+    }
+    main->setPen(p);
+    inOutItem->addToGroup(main);
 }

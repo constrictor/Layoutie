@@ -24,7 +24,7 @@
 #include <SLBoard.h>
 
 namespace Ui {
-	class BitmapExport;
+    class BitmapExport;
 }
 
 class BoardScene;
@@ -33,37 +33,37 @@ class QCheckBox;
 
 class BitmapExport : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	friend class Settings;
+    friend class Settings;
 public:
-	explicit BitmapExport(QWidget *inParent, const SLFormat::Board* inBoard);
-	~BitmapExport();
+    explicit BitmapExport(QWidget *inParent, const SLFormat::Board* inBoard);
+    ~BitmapExport();
 
 protected:
-	virtual void resizeEvent(QResizeEvent* );
+    virtual void resizeEvent(QResizeEvent* );
 private slots:
-	void	updateView();
-	void	resolutionUnitsChanged();
+    void    updateView();
+    void    resolutionUnitsChanged();
 
-	void	resolutionSliderChanged(int inValue);
-	void	resolutionEditChanged(const QString& inValue);
+    void    resolutionSliderChanged(int inValue);
+    void    resolutionEditChanged(const QString& inValue);
 
-	void	accepted();
-	void	rejected();
+    void    accepted();
+    void    rejected();
 
 private:
-	void	setResolution(int inUnits, int inRes);
-	void	getResolution(int& outUnits, int& outRes);
+    void    setResolution(int inUnits, int inRes);
+    void    getResolution(int& outUnits, int& outRes);
 
-	Ui::BitmapExport *ui;
+    Ui::BitmapExport *ui;
 
-	QCheckBox*	mLayerCheckBoxes[SLFormat::Board::cNumberLayers];
+    QCheckBox*    mLayerCheckBoxes[SLFormat::Board::cNumberLayers];
 
-	const SLFormat::Board*	mBoard;
-	BoardScene*	mScene;
+    const SLFormat::Board*    mBoard;
+    BoardScene*    mScene;
 
-	QString		mDir;
+    QString        mDir;
 };
 
 #endif // BITMAPEXPORT_H
